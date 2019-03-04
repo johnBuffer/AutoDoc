@@ -14,7 +14,7 @@ import android.view.ViewGroup
 
 
 
-class CustomAdapter(private val dataSet: ArrayList<MedocData>, internal var mContext: Context) :
+class MedocDataAdapter(private val dataSet: MutableList<MedocData>, internal var mContext: Context) :
     ArrayAdapter<MedocData>(mContext, R.layout.view_day, dataSet), View.OnClickListener
 {
     override fun onClick(v: View) {
