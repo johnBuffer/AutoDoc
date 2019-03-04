@@ -15,12 +15,8 @@ import android.view.ViewGroup
 
 
 class MedocDataAdapter(private val dataSet: MutableList<MedocData>, internal var mContext: Context) :
-    ArrayAdapter<MedocData>(mContext, R.layout.view_day, dataSet), View.OnClickListener
+    ArrayAdapter<MedocData>(mContext, R.layout.view_day, dataSet)
 {
-    override fun onClick(v: View) {
-
-    }
-
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val rowView = inflater.inflate(R.layout.view_medoc, parent, false)
@@ -28,7 +24,6 @@ class MedocDataAdapter(private val dataSet: MutableList<MedocData>, internal var
         val descriptionView = rowView.findViewById(R.id.medocDescription) as TextView
         timeView.text = dataSet[position].time.toString()
         descriptionView.text = dataSet[position].name
-        // change the icon for Windows and iPhone
 
         return rowView
     }

@@ -8,4 +8,9 @@ data class DayDataModel(val dayID: Int)
     {
         medocs.add(MedocData(name, time))
     }
+
+    fun getLastMedoc() : MedocData
+    {
+        return medocs.last()
+    }
 }
