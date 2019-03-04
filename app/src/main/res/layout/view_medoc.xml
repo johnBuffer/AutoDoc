@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                              xmlns:app="http://schemas.android.com/apk/res-auto"
-                                             xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-                                             android:layout_height="match_parent">
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="wrap_content">
 
     <EditText
             android:layout_width="115dp"
@@ -11,17 +12,19 @@
             android:text="Name"
             android:ems="10"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp" android:id="@+id/medocTime"
+            android:layout_marginStart="8dp" android:id="@+id/medocTime"
             app:layout_constraintHorizontal_bias="0.5" app:layout_constraintEnd_toStartOf="@+id/medocDescription"
-            android:layout_marginTop="16dp" app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginEnd="8dp"/>
     <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:text="Name"
             android:ems="10"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent" android:id="@+id/medocDescription"
             app:layout_constraintStart_toEndOf="@+id/medocTime" app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintBaseline_toBaselineOf="@+id/medocTime"/>
+            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"/>
 </android.support.constraint.ConstraintLayout>
