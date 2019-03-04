@@ -1,6 +1,6 @@
 package com.jti.autodoc.autodoc
 
-data class DayDataMedoc(val dayID: Int)
+data class DayDataModel(val dayID: Int)
 {
     val medocs: MutableList<MedocData> = ArrayList()
 
