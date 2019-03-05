@@ -15,6 +15,8 @@ class MainActivity : Activity() {
     var days = ArrayList<DayDataModel>(0)
     lateinit var adapter : DayDataAdapter
 
+    val SAVE_FILE_NAME = "data.json"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,7 +37,7 @@ class MainActivity : Activity() {
         super.onStop()
 
         var jsonData = dataToJson()
-        val filename = "datalol.json"
+        val filename = SAVE_FILE_NAME
         val outputStream: FileOutputStream
         try {
             outputStream = openFileOutput(filename, Context.MODE_PRIVATE)
@@ -110,7 +112,7 @@ class MainActivity : Activity() {
     {
         try
         {
-            var data = getStringFromFile("datalol.json")
+            var data = getStringFromFile(SAVE_FILE_NAME)
 
             var jsonData = JSONObject(data)
 

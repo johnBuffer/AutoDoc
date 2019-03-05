@@ -24,7 +24,6 @@ class DayDataAdapter(private val dataSet: MutableList<DayDataModel>, internal va
         descriptionView.text = medoc.name
 
         timeView.setOnClickListener {
-            // TODO Auto-generated method stub
             val mcurrentTime = Calendar.getInstance()
             val hour = mcurrentTime.get(Calendar.HOUR_OF_DAY)
             val minute = mcurrentTime.get(Calendar.MINUTE)
