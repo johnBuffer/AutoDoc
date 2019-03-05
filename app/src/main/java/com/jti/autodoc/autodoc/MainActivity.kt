@@ -23,8 +23,7 @@ class MainActivity : Activity() {
 
     fun onClick(view: View)
     {
-        var newDay = DayDataModel(days.size)
-        newDay.addMedoc("Day " + newDay.dayID.toString(), 1200)
+        var newDay = DayDataModel(days.size+1)
         days.add(newDay)
         adapter.notifyDataSetChanged()
     }
@@ -32,7 +31,7 @@ class MainActivity : Activity() {
     fun onDayClick(view: View)
     {
         var newDay = DayDataModel(days.size)
-        newDay.addMedoc("Day " + newDay.dayID.toString(), 1200)
+        newDay.addMedoc("Day " + newDay.dayID.toString(), "12:00")
         days.add(newDay)
         adapter.notifyDataSetChanged()
     }

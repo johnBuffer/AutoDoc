@@ -9,26 +9,37 @@
     <Button
             android:text="Add Medoc"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="16dp" android:layout_marginEnd="16dp" app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/addMedocButton"/>
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/addMedocButton" app:layout_constraintStart_toEndOf="@+id/medocCount"
+            app:layout_constraintHorizontal_bias="0.5" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp"/>
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" android:layout_marginBottom="16dp"
+            android:layout_height="wrap_content" android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/addMedocButton" android:layout_marginTop="8dp"
-            android:id="@+id/medocList">
+            app:layout_constraintTop_toBottomOf="@+id/dayName"
+            android:id="@+id/medocList" android:layout_marginTop="8dp">
     </LinearLayout>
     <TextView
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:inputType="textPersonName"
-            android:text="Name"
-            android:ems="10"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="16dp" android:layout_marginStart="16dp" android:id="@+id/editText"
-    />
+            android:text="TextView"
+            android:layout_width="0dp"
+            android:layout_height="50dp" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp"
+            android:id="@+id/dayName"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/medocCount" app:layout_constraintHorizontal_bias="0.5"
+            android:gravity="left|center_vertical" android:textSize="24sp"/>
+    <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:id="@+id/medocCount"
+            android:gravity="center"
+            app:layout_constraintStart_toEndOf="@+id/dayName" app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/addMedocButton" android:layout_marginEnd="8dp"
+            android:layout_marginTop="20dp" app:layout_constraintTop_toTopOf="parent"/>
 </android.support.constraint.ConstraintLayout>

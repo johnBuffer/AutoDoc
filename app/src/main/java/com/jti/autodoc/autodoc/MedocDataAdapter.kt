@@ -7,7 +7,6 @@ import android.R.string.ok
 import android.R.string.no
 import android.R.attr.label
 import android.widget.TextView
-import android.support.v4.content.ContextCompat.getSystemService
 import android.view.LayoutInflater
 import android.view.ViewGroup
 
