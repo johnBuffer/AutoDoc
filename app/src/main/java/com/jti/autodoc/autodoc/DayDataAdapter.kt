@@ -19,7 +19,7 @@ class DayDataAdapter(private val dataSet: MutableList<DayDataModel>, internal va
         val timeView = rowView.findViewById(R.id.medocTime) as TextView
         val descriptionView = rowView.findViewById(R.id.medocDescription) as TextView
         timeView.text = medoc.time
-        descriptionView.text = medoc.name
+        descriptionView.text = medoc.description
 
         timeView.setOnClickListener {
             val mcurrentTime = Calendar.getInstance()

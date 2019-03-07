@@ -1,6 +1,17 @@
 package com.jti.autodoc.autodoc
 
-data class MedocData(var name: String, var time: String)
+import org.json.JSONObject
+
+data class MedocData(var description: String, var time: String)
 {
-    //var name: String by Delegates.notNull()
+    constructor(jsonData : JSONObject) : this(jsonData.getString("description"), jsonData.getString("time"))
+
+    fun toJson() : JSONObject
+    {
+        var medocData = JSONObject()
+        medocData.put("description", description)
+        medocData.put("time", time)
+
+        return medocData
+    }
 }
