@@ -9,7 +9,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
 
-
 class MainActivity : Activity() {
 
     var days = ArrayList<DayDataModel>(0)
@@ -86,54 +85,31 @@ class MainActivity : Activity() {
         return root
     }
 
-    @Throws(Exception::class)
-    fun convertStreamToString(istr: InputStream): String {
-        val reader = BufferedReader(InputStreamReader(istr))
-        val sb = StringBuilder()
-        var line: String? = reader.readLine()
-        while (line != null) {
-            sb.append(line).append("\n")
-            line = reader.readLine()
-        }
-        reader.close()
-        return sb.toString()
-    }
 
-    @Throws(Exception::class)
-    fun getStringFromFile(filePath: String): String {
-        val fl = openFileInput(filePath)
-        val ret = convertStreamToString(fl)
-        //Make sure you close all streams.
-        fl.close()
-        return ret
-    }
 
-    private fun loadData()
+    private fun loadData() = try
     {
-        try
+        var data = FileUtils.getStringFromFile(SAVE_FILE_NAME, this)
+
+        var jsonData = JSONObject(data)
+
+        var daysArray = jsonData.getJSONArray("days")
+
+        for (i in 0 until daysArray.length())
         {
-            var data = getStringFromFile(SAVE_FILE_NAME)
-
-            var jsonData = JSONObject(data)
-
-            var daysArray = jsonData.getJSONArray("days")
-
-            for (i in 0 until daysArray.length())
+            var obj = daysArray.getJSONObject(i)
+            var newDay = DayDataModel(obj.getInt("id"))
+            var medocsArray = obj.getJSONArray("medocs")
+            for (j in 0 until medocsArray.length())
             {
-                var obj = daysArray.getJSONObject(i)
-                var newDay = DayDataModel(obj.getInt("id"))
-                var medocsArray = obj.getJSONArray("medocs")
-                for (j in 0 until medocsArray.length())
-                {
-                    var medocJson = medocsArray.getJSONObject(j)
-                    newDay.addMedoc(medocJson.getString("description"), medocJson.getString("time"))
-                }
-
-                days.add(newDay)
+                var medocJson = medocsArray.getJSONObject(j)
+                newDay.addMedoc(medocJson.getString("description"), medocJson.getString("time"))
             }
+
+            days.add(newDay)
         }
-        catch (e: Exception) {
-            e.printStackTrace()
-        }
+    }
+    catch (e: Exception) {
+        e.printStackTrace()
     }
 }

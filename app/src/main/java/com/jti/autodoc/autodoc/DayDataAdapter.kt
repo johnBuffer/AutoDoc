@@ -8,7 +8,6 @@ import android.widget.*
 import android.app.TimePickerDialog
 import java.util.*
 
-
 class DayDataAdapter(private val dataSet: MutableList<DayDataModel>, internal var mContext: Context) :
     ArrayAdapter<DayDataModel>(mContext, R.layout.view_day, dataSet)
 {
