@@ -47,4 +47,9 @@ data class DayDataModel(val dayID: Int)
 
         return dayData
     }
+
+    fun sortMedocs()
+    {
+        medocs.sortBy { medoc : MedocData -> medoc.time }
+    }
 }

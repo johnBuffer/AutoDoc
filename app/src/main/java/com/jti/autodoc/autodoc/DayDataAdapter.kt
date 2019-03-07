@@ -11,7 +11,6 @@ import java.util.*
 class DayDataAdapter(private val dataSet: MutableList<DayDataModel>, internal var mContext: Context) :
     ArrayAdapter<DayDataModel>(mContext, R.layout.view_day, dataSet)
 {
-
     private fun getMedocView(medoc : MedocData, parent: ViewGroup) : View
     {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -27,8 +26,8 @@ class DayDataAdapter(private val dataSet: MutableList<DayDataModel>, internal va
             val minute = mcurrentTime.get(Calendar.MINUTE)
             val mTimePicker: TimePickerDialog
             mTimePicker = TimePickerDialog(mContext,
-                TimePickerDialog.OnTimeSetListener { timePicker, selectedHour, selectedMinute ->
-                    medoc.time = "$selectedHour:$selectedMinute"
+                TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
+                    medoc.setTime(selectedHour, selectedMinute)
                     notifyDataSetChanged()
                 }, hour, minute, true
             )
@@ -44,6 +43,8 @@ class DayDataAdapter(private val dataSet: MutableList<DayDataModel>, internal va
         val dayView = inflater.inflate(R.layout.view_day, parent, false)
         var medocView = dayView.findViewById(R.id.medocList) as LinearLayout
         var currentDay = dataSet[position]
+
+        currentDay.sortMedocs()
 
         var dayName = dayView.findViewById<TextView>(R.id.dayName)
         dayName.text = "Day " + currentDay.dayID.toString()

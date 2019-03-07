@@ -14,4 +14,17 @@ data class MedocData(var description: String, var time: String)
 
         return medocData
     }
+
+    fun setTime(hour : Int, minute : Int)
+    {
+        var hourStr = hour.toString()
+        if (hour < 10)
+            hourStr = "0$hourStr"
+
+        var minutesStr = minute.toString()
+        if (minute < 10)
+            minutesStr = "0$minutesStr"
+
+        time = "$hourStr:$minutesStr"
+    }
 }
