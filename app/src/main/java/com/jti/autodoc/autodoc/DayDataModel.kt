@@ -52,4 +52,9 @@ data class DayDataModel(val dayID: Int)
     {
         medocs.sortBy { medoc : MedocData -> medoc.time }
     }
+
+    fun removeMedoc(medoc : MedocData)
+    {
+        medocs.remove(medoc)
+    }
 }
