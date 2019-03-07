@@ -1,14 +1,10 @@
 package com.jti.autodoc.autodoc
 
-import android.app.AlertDialog
 import android.content.Context
 import android.view.View
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.*
-import android.app.TimePickerDialog
-import java.util.*
-import android.content.DialogInterface
 
 class DayDataAdapter(private val dayManager: DayManager, var mContext: Context) :
     ArrayAdapter<DayDataModel>(mContext, R.layout.view_day, dayManager.days)
@@ -23,18 +19,17 @@ class DayDataAdapter(private val dayManager: DayManager, var mContext: Context) 
         descriptionView.text = medoc.description
 
         timeView.setOnClickListener {
-            val mcurrentTime = Calendar.getInstance()
-            val hour = mcurrentTime.get(Calendar.HOUR_OF_DAY)
-            val minute = mcurrentTime.get(Calendar.MINUTE)
-            val mTimePicker: TimePickerDialog
-            mTimePicker = TimePickerDialog(mContext,
-                TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-                    medoc.setTime(selectedHour, selectedMinute)
-                    notifyDataSetChanged()
-                }, hour, minute, true
-            )
-            mTimePicker.setTitle("Select Time")
-            mTimePicker.show()
+            PopUpUtils.getTimePicker(context) { selectedHour, selectedMinute ->
+                medoc.setTime(selectedHour, selectedMinute)
+                notifyDataSetChanged()
+            }
+        }
+
+        descriptionView.setOnClickListener {
+            PopUpUtils.getTextDialog(context, "Enter description", {description : String ->
+                medoc.description = description
+                notifyDataSetChanged()
+            }, {})
         }
 
         return rowView
@@ -52,13 +47,9 @@ class DayDataAdapter(private val dayManager: DayManager, var mContext: Context) 
         var dayName = dayView.findViewById<TextView>(R.id.dayName)
         dayName.text = "Day $dayID"
         dayName.setOnLongClickListener(View.OnLongClickListener {
-            PopUpUtils.getConfirmationPopUp("Remove Day $dayID ?",
-                {
-                    dayManager.removeDay(currentDay)
-                    notifyDataSetChanged()
-                },
-                {},
-                mContext
+            PopUpUtils.getConfirmationPopUp(mContext, "Remove Day $dayID ?",
+                {dayManager.removeDay(currentDay) ; notifyDataSetChanged()},
+                {}
             )
             true
         })
