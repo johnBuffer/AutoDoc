@@ -22,7 +22,7 @@ class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
         loadData()
 
-        adapter = DayDataAdapter(dayManager.days, this)
+        adapter = DayDataAdapter(dayManager, this)
 
         // Create the adapter to convert the array to views
         // Attach the adapter to a ListView

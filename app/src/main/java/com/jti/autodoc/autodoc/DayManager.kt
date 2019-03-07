@@ -46,4 +46,9 @@ class DayManager
     {
         return toJson().toString()
     }
+
+    fun removeDay(day : DayDataModel)
+    {
+        days.remove(day)
+    }
 }

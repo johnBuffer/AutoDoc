@@ -1,5 +1,6 @@
 package com.jti.autodoc.autodoc
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.View
 import android.view.LayoutInflater
@@ -7,9 +8,10 @@ import android.view.ViewGroup
 import android.widget.*
 import android.app.TimePickerDialog
 import java.util.*
+import android.content.DialogInterface
 
-class DayDataAdapter(private val dataSet: MutableList<DayDataModel>, internal var mContext: Context) :
-    ArrayAdapter<DayDataModel>(mContext, R.layout.view_day, dataSet)
+class DayDataAdapter(private val dayManager: DayManager, var mContext: Context) :
+    ArrayAdapter<DayDataModel>(mContext, R.layout.view_day, dayManager.days)
 {
     private fun getMedocView(medoc : MedocData, parent: ViewGroup) : View
     {
@@ -42,12 +44,24 @@ class DayDataAdapter(private val dataSet: MutableList<DayDataModel>, internal va
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val dayView = inflater.inflate(R.layout.view_day, parent, false)
         var medocView = dayView.findViewById(R.id.medocList) as LinearLayout
-        var currentDay = dataSet[position]
+        var currentDay = dayManager.days[position]
 
         currentDay.sortMedocs()
 
+        val dayID = currentDay.dayID.toString()
         var dayName = dayView.findViewById<TextView>(R.id.dayName)
-        dayName.text = "Day " + currentDay.dayID.toString()
+        dayName.text = "Day $dayID"
+        dayName.setOnLongClickListener(View.OnLongClickListener {
+            PopUpUtils.getConfirmationPopUp("Remove Day $dayID ?",
+                {
+                    dayManager.removeDay(currentDay)
+                    notifyDataSetChanged()
+                },
+                {},
+                mContext
+            )
+            true
+        })
 
         var medocCountView = dayView.findViewById<TextView>(R.id.medocCount)
         medocCountView.text = currentDay.medocs.size.toString()
