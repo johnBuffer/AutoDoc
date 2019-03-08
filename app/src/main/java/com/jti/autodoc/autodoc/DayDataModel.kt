@@ -57,4 +57,9 @@ data class DayDataModel(val dayID: Int)
     {
         medocs.remove(medoc)
     }
+
+    fun getNextTime()
+    {
+
+    }
 }

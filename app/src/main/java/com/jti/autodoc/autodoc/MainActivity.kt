@@ -14,17 +14,19 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.app.PendingIntent
 import android.app.AlarmManager
-import java.util.*
+import android.widget.Toast
+import org.json.JSONArray
 
 
 class MainActivity : Activity() {
     var dayManager = DayManager()
     lateinit var adapter : DayDataAdapter
 
+    val pendingIds = ArrayList<MedocDataTime>()
+
     companion object {
         const val SAVE_FILE_NAME = "data.json"
         var NOTIF_ID = 0
-        val REQUEST_CODE = 101
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -49,31 +51,66 @@ class MainActivity : Activity() {
                 timeView.text = dayManager.startDate
             }
         }
+    }
 
+    private fun updateAlarms()
+    {
         println("Start")
+        removeAllAlarms()
         createNotificationChannel()
 
-        val onIntent = Intent(this, AlarmReceiver::class.java)
-        onIntent.action = AlarmReceiver.NEW_MEDOC
-        val pendingIntent = PendingIntent.getBroadcast(this, 101, onIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        var requestCodeId = 0
 
-        val cal = Calendar.getInstance()
-        cal.timeInMillis = System.currentTimeMillis()
-        cal.add(Calendar.SECOND, 5)
+        val startTime = DateUtils.dateToMillis(dayManager.startDate)
+        val currentTime = System.currentTimeMillis()
+        val offset = currentTime - startTime
 
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExact(AlarmManager.RTC, cal.timeInMillis, pendingIntent)
+        println("Current time: $currentTime")
 
+        val medocsTiming = dayManager.getAllMedocs(offset)
+
+        for (medoc : MedocDataTime in medocsTiming)
+        {
+            val onIntent = Intent(this, AlarmReceiver::class.java)
+            onIntent.action = AlarmReceiver.NEW_MEDOC
+            onIntent.putExtra("medoc_description", medoc.description)
+
+            val pendingIntent =
+                PendingIntent.getBroadcast(this, requestCodeId++, onIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, startTime + medoc.startOffset, pendingIntent)
+
+            medoc.id = requestCodeId
+            pendingIds.add(medoc)
+            //println("Setting alarm for ${DateUtils.millisToDate(startTime + medoc.startOffset)}")
+        }
     }
 
     override fun onStop() {
         super.onStop()
 
+        updateAlarms()
+        Toast.makeText(this, "Alarms have been updated", Toast.LENGTH_SHORT).show()
+
         val filename = SAVE_FILE_NAME
         val outputStream: FileOutputStream
         try {
             outputStream = openFileOutput(filename, Context.MODE_PRIVATE)
-            outputStream.write(dayManager.toString().toByteArray())
+
+            val root = dayManager.toJson()
+            val pendingArray = JSONArray()
+            for (medoc : MedocDataTime in pendingIds)
+            {
+                val obj = JSONObject()
+                obj.put("id", medoc.id)
+                obj.put("description", medoc.description)
+                pendingArray.put(obj)
+            }
+
+            root.put("pendingIds", pendingArray)
+
+            outputStream.write(root.toString().toByteArray())
             outputStream.close()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -86,10 +123,38 @@ class MainActivity : Activity() {
         adapter.notifyDataSetChanged()
     }
 
+    private fun removeAllAlarms()
+    {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        for (medoc : MedocDataTime in pendingIds)
+        {
+            val onIntent = Intent(this, AlarmReceiver::class.java)
+            onIntent.action = AlarmReceiver.NEW_MEDOC
+            onIntent.putExtra("medoc_description", medoc.description)
+
+            val pendingIntent =
+                PendingIntent.getBroadcast(this, medoc.id, onIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+
+            alarmManager.cancel(pendingIntent)
+        }
+    }
+
     private fun loadData() = try
     {
-        var data = FileUtils.getStringFromFile(SAVE_FILE_NAME, this)
-        dayManager.fromJson(JSONObject(data))
+        val data = FileUtils.getStringFromFile(SAVE_FILE_NAME, this)
+
+        val jsonData = JSONObject(data)
+
+        val pendingArray = jsonData.getJSONArray("pendingIds")
+        for (i in 0 until pendingArray.length())
+        {
+            val medocID = pendingArray.getJSONObject(i).getInt("id")
+            val medocDescription = pendingArray.getJSONObject(i).getString("description")
+            pendingIds.add(MedocDataTime(0, medocDescription, medocID))
+        }
+
+        dayManager.fromJson(jsonData)
+
     }
     catch (e: Exception) {
         e.printStackTrace()

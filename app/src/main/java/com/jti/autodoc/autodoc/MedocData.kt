@@ -27,4 +27,10 @@ data class MedocData(var description: String, var time: String)
 
         time = "$hourStr:$minutesStr"
     }
+
+    fun getTime(start_time : Long) : Long
+    {
+        return DateUtils.timeToMillis(time)
+    }
 }
+

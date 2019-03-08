@@ -2,22 +2,27 @@ package com.jti.autodoc.autodoc
 
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.*
+import kotlin.collections.ArrayList
+
+data class MedocDataTime(val startOffset : Long, val description: String, var id: Int)
+{
+
+}
 
 class DayManager
 {
     val days = ArrayList<DayDataModel>()
-    var startDate: String = ""
+    var startDate: String = "01/01/2019"
 
     fun fromJson(jsonData : JSONObject)
     {
-        var daysArray = jsonData.getJSONArray("days")
+        val daysArray = jsonData.getJSONArray("days")
 
         startDate = jsonData.getString("start")
 
         for (i in 0 until daysArray.length())
         {
-            var obj = daysArray.getJSONObject(i)
+            val obj = daysArray.getJSONObject(i)
             days.add(DayDataModel(obj))
         }
     }
@@ -32,7 +37,7 @@ class DayManager
         return days.size
     }
 
-    private fun toJson() : JSONObject
+    fun toJson() : JSONObject
     {
         val root  = JSONObject()
         val dayArray = JSONArray()
@@ -70,4 +75,39 @@ class DayManager
 
         startDate = "$dayStr/$monthStr/$year"
     }
+
+    fun getAllMedocs(time : Long) : ArrayList<MedocDataTime>
+    {
+        val size = days.size
+        val currentDay = (time / DateUtils.MS_PER_DAY)
+        val currentDayInProgram = currentDay % size
+        val timeInDay = time % DateUtils.MS_PER_DAY
+
+        var timings = ArrayList<MedocDataTime>()
+
+        println("Current day in program : $currentDayInProgram, day since start : $currentDay")
+
+        for (i : Int in 0 until size)
+        {
+            val currentIndex = ((i + currentDayInProgram)%size).toInt()
+            val day = days[currentIndex]
+            if (day.medocs.size > 0)
+            {
+                println("Searching for medoc in day $currentIndex at timeInDay: $timeInDay (${DateUtils.millisTOTime(timeInDay.toInt())})")
+                for (medoc : MedocData in day.medocs)
+                {
+                    val medocTime = DateUtils.timeToMillis(medoc.time)
+                    if (medocTime > timeInDay || i>0)
+                    {
+                        println("Found medoc at " + medoc.time + " -> OK (Offset time : ${(currentDay + i)* DateUtils.MS_PER_DAY + medocTime})")
+                        val offset = (currentDay + i)* DateUtils.MS_PER_DAY + medocTime
+                        timings.add(MedocDataTime(offset, medoc.description, 0))
+                    }
+                }
+            }
+        }
+
+        return timings
+    }
 }
+

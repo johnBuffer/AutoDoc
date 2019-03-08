@@ -1,8 +1,10 @@
 package com.jti.autodoc.autodoc
+import android.app.PendingIntent.FLAG_ONE_SHOT
+import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.content.Intent
 import android.content.BroadcastReceiver
-import android.widget.Toast
+import android.support.v4.app.NotificationManagerCompat
 
 class AlarmReceiver : BroadcastReceiver()
 {
@@ -14,14 +16,13 @@ class AlarmReceiver : BroadcastReceiver()
 
     override fun onReceive(context: Context, intent: Intent)
     {
-        println("Broadcast received")
-        Toast.makeText(context, "Alarm Triggered", Toast.LENGTH_SHORT).show()
-        /*val notificationIntent = Intent(context, MainActivity::class.java)
+        val notificationIntent = Intent(context, MainActivity::class.java)
         val pendingIntent = getActivity(context, 0, notificationIntent, FLAG_ONE_SHOT)
 
         val notificationId = MainActivity.NOTIF_ID++
         with(NotificationManagerCompat.from(context)) {
-            notify(notificationId, NotificationBuilder.getMedocNotification(context, pendingIntent))
-        }*/
+            val description = intent.extras.getString("medoc_description")
+            notify(notificationId, NotificationBuilder.getMedocNotification(context, pendingIntent, "It's time !", description))
+        }
     }
 }
