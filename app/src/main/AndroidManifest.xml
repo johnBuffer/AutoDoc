@@ -27,6 +27,8 @@
                 android:name=".NotificationIntentService"
                 android:exported="false" >
         </service>
+        <service android:name=".RegisterNotificationService"/>
+        <service android:name=".SendNotificationService"/>
 
         android:permission="android.permission.BIND_JOB_SERVICE"
 

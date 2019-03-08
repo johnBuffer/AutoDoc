@@ -8,15 +8,10 @@ import android.widget.ListView
 import android.widget.TextView
 import org.json.JSONObject
 import java.io.*
-import android.support.v4.content.ContextCompat.getSystemService
 import android.content.Intent
-import java.util.*
-import android.R.attr.x
 import android.app.*
 import android.os.Build
 import android.support.annotation.RequiresApi
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
 
 
 class MainActivity : Activity() {
@@ -25,7 +20,7 @@ class MainActivity : Activity() {
 
     companion object {
         const val SAVE_FILE_NAME = "data.json"
-        const val CHANNEL_ID = 5
+        var NOTIF_ID = 0
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -45,40 +40,16 @@ class MainActivity : Activity() {
         val timeView = findViewById<TextView>(R.id.startDate)
         timeView.text = dayManager.startDate
         timeView.setOnClickListener {
-            PopUpUtils.getCalendarPicker(this) { year: Int, month : Int, day : Int ->
-                dayManager.setDate(year, month+1, day)
+            PopUpUtils.getCalendarPicker(this) { year: Int, month: Int, day: Int ->
+                dayManager.setDate(year, month + 1, day)
                 timeView.text = dayManager.startDate
             }
         }
 
         createNotificationChannel()
 
-        val cal = Calendar.getInstance()
-        cal.timeInMillis = System.currentTimeMillis()
-        cal.set(Calendar.YEAR, 2019)
-        cal.set(Calendar.MONTH, Calendar.MARCH)
-        cal.set(Calendar.DAY_OF_MONTH, 8)
-        cal.set(Calendar.HOUR, 11)
-        cal.set(Calendar.MINUTE, 47)
-
-        val alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setWindow(AlarmManager.RTC_WAKEUP, cal.timeInMillis, 1000, "Medoc notification",
-            {
-                val notificationId = 1
-                var builder = NotificationCompat.Builder(this, getString(R.string.app_notif_channel))
-                    .setSmallIcon(R.drawable.notification_icon_background)
-                    .setContentTitle("My notification")
-                    .setContentText("Much longer text that cannot fit one line...")
-                    .setStyle(NotificationCompat.BigTextStyle()
-                        .bigText("Much longer text that cannot fit one line..."))
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-                with(NotificationManagerCompat.from(this)) {
-                    // notificationId is a unique int for each notification that you must define
-                    notify(notificationId, builder.build())
-                }
-            },
-            null)
+        val myIntent = Intent(this, RegisterNotificationService::class.java)
+        startService(myIntent)
     }
 
     override fun onStop() {
@@ -115,9 +86,9 @@ class MainActivity : Activity() {
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.app_notif_channel)
-            val descriptionText = getString(R.string.app_notif_channel_description)
+            val descriptionText = getString(R.string.app_notif_channel)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(getString(R.string.app_notif_channel), name, importance).apply {
+            val channel = NotificationChannel("default", name, importance).apply {
                 description = descriptionText
             }
             // Register the channel with the system
