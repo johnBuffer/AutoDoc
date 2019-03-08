@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.*
 
-class DayDataAdapter(private val dayManager: DayManager, var mContext: Context) :
+class DayDataAdapter(private val dayManager: DayManager, private var mContext: Context) :
     ArrayAdapter<DayDataModel>(mContext, R.layout.view_day, dayManager.days)
 {
     private fun getMedocView(day : DayDataModel, medoc : MedocData, parent: ViewGroup) : View
@@ -51,15 +51,15 @@ class DayDataAdapter(private val dayManager: DayManager, var mContext: Context) 
         // Initialize views to be inflated
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val dayView = inflater.inflate(R.layout.view_day, parent, false)
-        var medocView = dayView.findViewById(R.id.medocList) as LinearLayout
-        var currentDay = dayManager.days[position]
+        val medocView = dayView.findViewById(R.id.medocList) as LinearLayout
+        val currentDay = dayManager.days[position]
 
         // Sort medocs by time
         currentDay.sortMedocs()
 
         // Set day's name and add removal dialog
         val dayID = currentDay.dayID.toString()
-        var dayName = dayView.findViewById<TextView>(R.id.dayName)
+        val dayName = dayView.findViewById<TextView>(R.id.dayName)
         dayName.text = "Day $dayID"
         dayName.setOnLongClickListener {
             PopUpUtils.getConfirmationPopUp(mContext, "Remove Day $dayID ?",
@@ -70,7 +70,7 @@ class DayDataAdapter(private val dayManager: DayManager, var mContext: Context) 
         }
 
         // Set the counter view
-        var medocCountView = dayView.findViewById<TextView>(R.id.medocCount)
+        val medocCountView = dayView.findViewById<TextView>(R.id.medocCount)
         medocCountView.text = currentDay.medocs.size.toString()
 
         // Add medocs to the current day
@@ -80,7 +80,7 @@ class DayDataAdapter(private val dayManager: DayManager, var mContext: Context) 
         }
 
         // Add the "add" button to add a new medoc
-        var button = dayView.findViewById(R.id.addMedocButton) as Button
+        val button = dayView.findViewById(R.id.addMedocButton) as Button
         button.setOnClickListener {
             currentDay.addMedoc("New medoc", "12:00")
             notifyDataSetChanged()

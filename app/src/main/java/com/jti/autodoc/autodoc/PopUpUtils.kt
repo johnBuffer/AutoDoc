@@ -7,6 +7,11 @@ import android.content.DialogInterface
 import java.util.*
 import android.text.InputType
 import android.widget.EditText
+import android.app.DatePickerDialog
+import android.view.View
+import android.widget.DatePicker
+
+
 
 
 
@@ -72,6 +77,21 @@ class PopUpUtils
             ) { _, _ -> lambdaNo() }
 
             builder.show()
+        }
+
+        fun getCalendarPicker(context : Context, lambdaOk : (Int, Int, Int) -> Unit)
+        {
+            val myCalendar = Calendar.getInstance()
+
+            val date = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                // TODO Auto-generated method stub
+                lambdaOk(year, monthOfYear, dayOfMonth)
+            }
+
+            DatePickerDialog(context, date, myCalendar
+                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
         }
     }
 }
