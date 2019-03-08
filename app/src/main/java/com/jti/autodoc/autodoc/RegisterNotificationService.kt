@@ -1,25 +1,27 @@
 package com.jti.autodoc.autodoc
-
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.BroadcastReceiver
-import android.support.v4.app.NotificationManagerCompat
-
+import android.widget.Toast
 
 class AlarmReceiver : BroadcastReceiver()
 {
+    companion object {
+        const val NEW_MEDOC = "new_medoc"
+        //val ALUM_SCREEN_OFF = "screenOff"
+        //private val TAG = "AlarmReceiver"
+    }
+
     override fun onReceive(context: Context, intent: Intent)
     {
-        val intent = Intent(context, MainActivity.javaClass)
-        val pendingIntent = PendingIntent.getActivity(
-            context, 0, intent, PendingIntent.FLAG_ONE_SHOT
-        )
+        println("Broadcast received")
+        Toast.makeText(context, "Alarm Triggered", Toast.LENGTH_SHORT).show()
+        /*val notificationIntent = Intent(context, MainActivity::class.java)
+        val pendingIntent = getActivity(context, 0, notificationIntent, FLAG_ONE_SHOT)
 
         val notificationId = MainActivity.NOTIF_ID++
         with(NotificationManagerCompat.from(context)) {
-            // notificationId is a unique int for each notification that you must define
             notify(notificationId, NotificationBuilder.getMedocNotification(context, pendingIntent))
-        }
+        }*/
     }
 }

@@ -12,6 +12,9 @@ import android.content.Intent
 import android.app.*
 import android.os.Build
 import android.support.annotation.RequiresApi
+import android.app.PendingIntent
+import android.app.AlarmManager
+import java.util.*
 
 
 class MainActivity : Activity() {
@@ -21,6 +24,7 @@ class MainActivity : Activity() {
     companion object {
         const val SAVE_FILE_NAME = "data.json"
         var NOTIF_ID = 0
+        val REQUEST_CODE = 101
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -46,10 +50,20 @@ class MainActivity : Activity() {
             }
         }
 
+        println("Start")
         createNotificationChannel()
 
-        val myIntent = Intent(this, RegisterNotificationService::class.java)
-        startService(myIntent)
+        val onIntent = Intent(this, AlarmReceiver::class.java)
+        onIntent.action = AlarmReceiver.NEW_MEDOC
+        val pendingIntent = PendingIntent.getBroadcast(this, 101, onIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = System.currentTimeMillis()
+        cal.add(Calendar.SECOND, 5)
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExact(AlarmManager.RTC, cal.timeInMillis, pendingIntent)
+
     }
 
     override fun onStop() {
