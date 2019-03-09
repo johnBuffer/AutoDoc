@@ -19,9 +19,7 @@ import org.json.JSONArray
 
 
 class MainActivity : Activity() {
-    var dayManager = DayManager()
-    lateinit var adapter : DayDataAdapter
-
+    var jsonData = JSONObject()
     val pendingIds = ArrayList<MedocDataTime>()
 
     companion object {
@@ -33,35 +31,20 @@ class MainActivity : Activity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
         loadData()
 
-        adapter = DayDataAdapter(dayManager, this)
 
-        // Create the adapter to convert the array to views
-        // Attach the adapter to a ListView
-        val listView = findViewById<ListView>(R.id.dayList)
-        listView.adapter = adapter
-
-        val timeView = findViewById<TextView>(R.id.startDate)
-        timeView.text = dayManager.startDate
-        timeView.setOnClickListener {
-            PopUpUtils.getCalendarPicker(this) { year: Int, month: Int, day: Int ->
-                dayManager.setDate(year, month + 1, day)
-                timeView.text = dayManager.startDate
-            }
-        }
     }
 
     private fun updateAlarms()
     {
         println("Start")
         removeAllAlarms()
-        createNotificationChannel()
 
         var requestCodeId = 0
 
-        val startTime = DateUtils.dateToMillis(dayManager.startDate)
+        /*val startTime = DateUtils.dateToMillis(dayManager.startDate)
         val currentTime = System.currentTimeMillis()
         val offset = currentTime - startTime
 
@@ -84,7 +67,7 @@ class MainActivity : Activity() {
             medoc.id = requestCodeId
             pendingIds.add(medoc)
             //println("Setting alarm for ${DateUtils.millisToDate(startTime + medoc.startOffset)}")
-        }
+        }*/
     }
 
     override fun onStop() {
@@ -98,7 +81,9 @@ class MainActivity : Activity() {
         try {
             outputStream = openFileOutput(filename, Context.MODE_PRIVATE)
 
-            val root = dayManager.toJson()
+            val root = jsonData
+            root.remove("pendingIds")
+
             val pendingArray = JSONArray()
             for (medoc : MedocDataTime in pendingIds)
             {
@@ -115,12 +100,6 @@ class MainActivity : Activity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    fun onClick(view: View)
-    {
-        dayManager.addDay()
-        adapter.notifyDataSetChanged()
     }
 
     private fun removeAllAlarms()
@@ -143,7 +122,7 @@ class MainActivity : Activity() {
     {
         val data = FileUtils.getStringFromFile(SAVE_FILE_NAME, this)
 
-        val jsonData = JSONObject(data)
+        jsonData = JSONObject(data)
 
         val pendingArray = jsonData.getJSONArray("pendingIds")
         for (i in 0 until pendingArray.length())
@@ -152,28 +131,8 @@ class MainActivity : Activity() {
             val medocDescription = pendingArray.getJSONObject(i).getString("description")
             pendingIds.add(MedocDataTime(0, medocDescription, medocID))
         }
-
-        dayManager.fromJson(jsonData)
-
     }
     catch (e: Exception) {
         e.printStackTrace()
-    }
-
-    private fun createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.app_notif_channel)
-            val descriptionText = getString(R.string.app_notif_channel)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel("default", name, importance).apply {
-                description = descriptionText
-            }
-            // Register the channel with the system
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
     }
 }
