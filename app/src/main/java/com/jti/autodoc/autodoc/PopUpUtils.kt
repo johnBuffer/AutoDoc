@@ -56,16 +56,16 @@ class PopUpUtils
             return timePicker
         }
 
-        fun getTextDialog(context : Context, title : String, lambdaYes: (String) -> Unit, lambdaNo: () -> Unit)
+        fun getTextDialog(context : Context, title : String, text : String, lambdaYes: (String) -> Unit, lambdaNo: () -> Unit)
         {
             val builder = AlertDialog.Builder(context)
             builder.setTitle(title)
 
             // Set up the input
             val input = EditText(context)
-            //input.setPadding(16, 0, 16, 0)
             // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
             input.inputType = InputType.TYPE_CLASS_TEXT
+            input.setText(text)
             builder.setView(input)
 
             // Set up the buttons

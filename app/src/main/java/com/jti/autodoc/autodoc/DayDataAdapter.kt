@@ -5,10 +5,19 @@ import android.view.View
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.*
+import android.widget.TextView
 
 class DayDataAdapter(private val dayManager: DayManager, private var mContext: Context) :
     ArrayAdapter<DayDataModel>(mContext, R.layout.view_day, dayManager.days)
 {
+
+    internal class ViewHolderItem {
+        var medocView : LinearLayout? = null
+        var dayNameView : TextView? = null
+        var medocCountView : TextView? = null
+        var button : Button? = null
+    }
+
     private fun getMedocView(day : DayDataModel, medoc : MedocData, parent: ViewGroup) : View
     {
         // Initialize views to be inflated
@@ -29,7 +38,7 @@ class DayDataAdapter(private val dayManager: DayManager, private var mContext: C
 
         // Pops a text input dialog to change medoc's description
         descriptionView.setOnClickListener {
-            PopUpUtils.getTextDialog(context, "Enter description", {description : String ->
+            PopUpUtils.getTextDialog(context, "Enter description", descriptionView.text.toString(), {description : String ->
                 medoc.description = description
                 notifyDataSetChanged()
             }, {})
@@ -47,11 +56,32 @@ class DayDataAdapter(private val dayManager: DayManager, private var mContext: C
         return rowView
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
+    {
+        val viewHolder: ViewHolderItem
+        var result = convertView
+
+        if (result == null)
+        {
+            viewHolder = ViewHolderItem()
+            // Initialize views to be inflated
+            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+            result = inflater.inflate(R.layout.view_day, parent, false)
+
+            viewHolder.medocView = result.findViewById(R.id.medocList)
+            viewHolder.dayNameView = result.findViewById(R.id.dayName)
+            viewHolder.medocCountView = result.findViewById(R.id.medocCount)
+            viewHolder.button = result.findViewById(R.id.addMedocButton) as Button
+
+            result?.tag = viewHolder
+        }
+        else
+        {
+            viewHolder = result.tag as ViewHolderItem
+        }
+
         // Initialize views to be inflated
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val dayView = inflater.inflate(R.layout.view_day, parent, false)
-        val medocView = dayView.findViewById(R.id.medocList) as LinearLayout
         val currentDay = dayManager.days[position]
 
         // Sort medocs by time
@@ -59,9 +89,8 @@ class DayDataAdapter(private val dayManager: DayManager, private var mContext: C
 
         // Set day's name and add removal dialog
         val dayID = currentDay.dayID.toString()
-        val dayName = dayView.findViewById<TextView>(R.id.dayName)
-        dayName.text = "Day $dayID"
-        dayName.setOnLongClickListener {
+        viewHolder.dayNameView!!.text = "Day $dayID"
+        viewHolder.dayNameView!!.setOnLongClickListener {
             PopUpUtils.getConfirmationPopUp(mContext, "Remove Day $dayID ?",
                 {dayManager.removeDay(currentDay) ; notifyDataSetChanged()},
                 {}
@@ -70,22 +99,21 @@ class DayDataAdapter(private val dayManager: DayManager, private var mContext: C
         }
 
         // Set the counter view
-        val medocCountView = dayView.findViewById<TextView>(R.id.medocCount)
-        medocCountView.text = currentDay.medocs.size.toString()
+        viewHolder.medocCountView!!.text = currentDay.medocs.size.toString()
 
         // Add medocs to the current day
+        viewHolder.medocView!!.removeAllViews()
         for (medoc : MedocData in currentDay.medocs)
         {
-            medocView.addView(getMedocView(currentDay, medoc, parent))
+            viewHolder.medocView!!.addView(getMedocView(currentDay, medoc, parent))
         }
 
         // Add the "add" button to add a new medoc
-        val button = dayView.findViewById(R.id.addMedocButton) as Button
-        button.setOnClickListener {
+        viewHolder.button!!.setOnClickListener {
             currentDay.addMedoc("New medoc", "12:00")
             notifyDataSetChanged()
         }
 
-        return dayView
+        return result!!
     }
 }

@@ -78,12 +78,17 @@ class DayManager
 
     fun getAllMedocs(time : Long) : ArrayList<MedocDataTime>
     {
+        val timings = ArrayList<MedocDataTime>()
         val size = days.size
+
+        if (size == 0)
+            return timings
+
         val currentDay = (time / DateUtils.MS_PER_DAY)
         val currentDayInProgram = currentDay % size
         val timeInDay = time % DateUtils.MS_PER_DAY
 
-        var timings = ArrayList<MedocDataTime>()
+
 
         println("Current day in program : $currentDayInProgram, day since start : $currentDay")
 
