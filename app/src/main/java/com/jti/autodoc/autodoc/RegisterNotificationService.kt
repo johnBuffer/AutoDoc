@@ -10,8 +10,6 @@ class AlarmReceiver : BroadcastReceiver()
 {
     companion object {
         const val NEW_MEDOC = "new_medoc"
-        //val ALUM_SCREEN_OFF = "screenOff"
-        //private val TAG = "AlarmReceiver"
     }
 
     override fun onReceive(context: Context, intent: Intent)

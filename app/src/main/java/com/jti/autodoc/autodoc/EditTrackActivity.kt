@@ -3,6 +3,7 @@ package com.jti.autodoc.autodoc;
 import android.app.Activity;
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import org.json.JSONObject
@@ -39,11 +40,15 @@ class EditTrackActivity : Activity() {
             }
         }
 
-
+        val button = findViewById<Button>(R.id.addDay)
+        button.setOnClickListener {
+            this.onClick(button)
+        }
     }
 
     fun onClick(view: View)
     {
+        println("CLICCCC")
         dayManager.addDay()
         adapter.notifyDataSetChanged()
     }

@@ -1,6 +1,7 @@
 package com.jti.autodoc.autodoc
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,12 @@ class TrackViewAdapter(private val tracks : ArrayList<Track>, private val mConte
         val currentTrack = tracks[position]
         val trackName = trackView.findViewById<TextView>(R.id.trackName)
         val trackDaysCount = trackView.findViewById<TextView>(R.id.trackDaysCount)
+
+        trackView.setOnClickListener {
+            val intent = Intent(mContext, EditTrackActivity::class.java)
+            intent.putExtra("trackData", currentTrack.toString())
+            mContext.startActivity(intent)
+        }
 
         trackName.text = currentTrack.name
         trackDaysCount.text = currentTrack.days.size.toString()
