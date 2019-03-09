@@ -45,17 +45,21 @@ class MainActivity : Activity() {
     {
         removeAllAlarms()
 
-        var requestCodeId = 0
         val currentTime = System.currentTimeMillis()
+        var requestCodeId = currentTime.toInt()
+
+        println("*** STAAAAAAAAAAAAAAAAAAAAAAAAAART ***")
 
         for (track : Track in tracks)
         {
+            println("\nTrack ${track.name}")
             val startTime = DateUtils.dateToMillis(track.startDate)
             val offset = currentTime - startTime
-            
+
             val medocsTiming = track.getAllMedocs(offset)
 
-            for (medoc: MedocDataTime in medocsTiming) {
+            for (medoc: MedocDataTime in medocsTiming)
+            {
                 val onIntent = Intent(this, AlarmReceiver::class.java)
                 onIntent.action = AlarmReceiver.NEW_MEDOC
                 onIntent.putExtra("medoc_description", medoc.description)

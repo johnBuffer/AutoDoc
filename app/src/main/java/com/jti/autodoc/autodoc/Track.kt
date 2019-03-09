@@ -79,11 +79,9 @@ class Track
         val currentDayInProgram = currentDay % size
         val timeInDay = time % DateUtils.MS_PER_DAY
 
+        //println("Current day in program : $currentDayInProgram, day since start : $currentDay")
 
-
-        println("Current day in program : $currentDayInProgram, day since start : $currentDay")
-
-        for (i : Int in 0 until size)
+        for (i : Int in 0 until size + 1)
         {
             val currentIndex = ((i + currentDayInProgram)%size).toInt()
             val day = days[currentIndex]
@@ -95,7 +93,7 @@ class Track
                     val medocTime = DateUtils.timeToMillis(medoc.time)
                     if (medocTime > timeInDay || i>0)
                     {
-                        println("Found medoc at " + medoc.time + " -> OK (Offset time : ${(currentDay + i)* DateUtils.MS_PER_DAY + medocTime})")
+                        //println("Found medoc at " + medoc.time + " -> OK (Offset time : ${(currentDay + i)* DateUtils.MS_PER_DAY + medocTime})")
                         val offset = (currentDay + i)* DateUtils.MS_PER_DAY + medocTime
                         timings.add(MedocDataTime(offset, medoc.description, 0))
                     }
