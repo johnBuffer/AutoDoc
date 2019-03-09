@@ -19,7 +19,7 @@ class AlarmReceiver : BroadcastReceiver()
         val notificationIntent = Intent(context, MainActivity::class.java)
         val pendingIntent = getActivity(context, 0, notificationIntent, FLAG_ONE_SHOT)
 
-        val notificationId = MainActivity.NOTIF_ID++
+        val notificationId = MainActivity.NOTIFICATION_ID++
         with(NotificationManagerCompat.from(context)) {
             val description = intent.extras.getString("medoc_description")
             notify(notificationId, NotificationBuilder.getMedocNotification(context, pendingIntent, "It's time !", description))

@@ -5,21 +5,19 @@ import org.json.JSONObject
 import kotlin.collections.ArrayList
 
 data class MedocDataTime(val startOffset : Long, val description: String, var id: Int)
-{
 
-}
-
-class DayManager
+class Track
 {
     val days = ArrayList<DayDataModel>()
     var startDate: String = "01/01/2019"
+    var name = "New Track"
 
     fun fromJson(jsonData : JSONObject)
     {
-        val daysArray = jsonData.getJSONArray("days")
-
+        name = jsonData.getString("name")
         startDate = jsonData.getString("start")
 
+        val daysArray = jsonData.getJSONArray("days")
         for (i in 0 until daysArray.length())
         {
             val obj = daysArray.getJSONObject(i)
@@ -40,16 +38,17 @@ class DayManager
     fun toJson() : JSONObject
     {
         val root  = JSONObject()
-        val dayArray = JSONArray()
 
+        root.put("name", name)
         root.put("start", startDate)
 
+        val dayArray = JSONArray()
         for (day : DayDataModel in days)
         {
             dayArray.put(day.toJson())
         }
-
         root.put("days", dayArray)
+
         return root
     }
 
@@ -65,15 +64,7 @@ class DayManager
 
     fun setDate(year : Int, month : Int, day : Int)
     {
-        var monthStr = month.toString()
-        if (month < 10)
-            monthStr = "0$monthStr"
-
-        var dayStr = day.toString()
-        if (day < 10)
-            dayStr = "0$dayStr"
-
-        startDate = "$dayStr/$monthStr/$year"
+        startDate = DateUtils.getPrettyDate(year, month, day)
     }
 
     fun getAllMedocs(time : Long) : ArrayList<MedocDataTime>

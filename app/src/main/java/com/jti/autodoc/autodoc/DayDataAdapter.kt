@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import android.widget.*
 import android.widget.TextView
 
-class DayDataAdapter(private val dayManager: DayManager, private var mContext: Context) :
-    ArrayAdapter<DayDataModel>(mContext, R.layout.view_day, dayManager.days)
+class DayDataAdapter(private val track: Track, private var mContext: Context) :
+    ArrayAdapter<DayDataModel>(mContext, R.layout.view_day, track.days)
 {
-
     internal class ViewHolderItem {
         var medocView : LinearLayout? = null
         var dayNameView : TextView? = null
@@ -82,7 +81,7 @@ class DayDataAdapter(private val dayManager: DayManager, private var mContext: C
         }
 
         // Initialize views to be inflated
-        val currentDay = dayManager.days[position]
+        val currentDay = track.days[position]
 
         // Sort medocs by time
         currentDay.sortMedocs()
@@ -92,7 +91,7 @@ class DayDataAdapter(private val dayManager: DayManager, private var mContext: C
         viewHolder.dayNameView!!.text = "Day $dayID"
         viewHolder.dayNameView!!.setOnLongClickListener {
             PopUpUtils.getConfirmationPopUp(mContext, "Remove Day $dayID ?",
-                {dayManager.removeDay(currentDay) ; notifyDataSetChanged()},
+                {track.removeDay(currentDay) ; notifyDataSetChanged()},
                 {}
             )
             true

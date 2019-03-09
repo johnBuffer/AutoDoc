@@ -55,5 +55,18 @@ class DateUtils
 
             return dateFormat.format(millis)
         }
+
+        fun getPrettyDate(year : Int, month : Int, day : Int) : String
+        {
+            var monthStr = month.toString()
+            if (month < 10)
+                monthStr = "0$monthStr"
+
+            var dayStr = day.toString()
+            if (day < 10)
+                dayStr = "0$dayStr"
+
+            return "$dayStr/$monthStr/$year"
+        }
     }
 }

@@ -20,21 +20,25 @@ import org.json.JSONArray
 
 class MainActivity : Activity() {
     var jsonData = JSONObject()
-    val pendingIds = ArrayList<MedocDataTime>()
+    private val pendingIds = ArrayList<MedocDataTime>()
+    private val tracks = ArrayList<Track>()
+
+    lateinit var adapter : TrackViewAdapter
 
     companion object {
         const val SAVE_FILE_NAME = "data.json"
-        var NOTIF_ID = 0
+        var NOTIFICATION_ID = 0
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         loadData()
+        adapter = TrackViewAdapter(tracks, this)
 
-
+        setContentView(R.layout.activity_main)
+        val listView = findViewById<ListView>(R.id.tracksView)
+        listView.adapter = adapter
     }
 
     private fun updateAlarms()
@@ -113,26 +117,47 @@ class MainActivity : Activity() {
 
             val pendingIntent =
                 PendingIntent.getBroadcast(this, medoc.id, onIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-
             alarmManager.cancel(pendingIntent)
         }
     }
 
+    // Load previous data from JSON file
     private fun loadData() = try
     {
         val data = FileUtils.getStringFromFile(SAVE_FILE_NAME, this)
-
         jsonData = JSONObject(data)
-
-        val pendingArray = jsonData.getJSONArray("pendingIds")
-        for (i in 0 until pendingArray.length())
-        {
-            val medocID = pendingArray.getJSONObject(i).getInt("id")
-            val medocDescription = pendingArray.getJSONObject(i).getString("description")
-            pendingIds.add(MedocDataTime(0, medocDescription, medocID))
-        }
+        loadTracks(jsonData.getJSONArray("tracks"))
+        loadPendingIDs(jsonData.getJSONArray("pendingIds"))
     }
     catch (e: Exception) {
         e.printStackTrace()
+    }
+
+    private fun loadPendingIDs(array : JSONArray)
+    {
+        for (i in 0 until array.length())
+        {
+            val currentID = array.getJSONObject(i)
+            val medocID = currentID.getInt("id")
+            val medocDescription = currentID.getString("description")
+            pendingIds.add(MedocDataTime(0, medocDescription, medocID))
+        }
+    }
+
+    private fun loadTracks(array : JSONArray)
+    {
+        for (i in 0 until array.length())
+        {
+            val currentTrack = array.getJSONObject(i)
+            val newTrack = Track()
+            newTrack.fromJson(currentTrack)
+            tracks.add(newTrack)
+        }
+    }
+
+    fun onClick(view: View)
+    {
+        tracks.add(Track())
+        adapter.notifyDataSetChanged()
     }
 }

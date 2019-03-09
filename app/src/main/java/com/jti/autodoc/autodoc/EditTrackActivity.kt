@@ -7,8 +7,8 @@ import android.widget.ListView
 import android.widget.TextView
 import org.json.JSONObject
 
-class EditDayActivity : Activity() {
-    var dayManager = DayManager()
+class EditTrackActivity : Activity() {
+    var dayManager = Track()
     private var trackData = JSONObject()
     lateinit var adapter : DayDataAdapter
 
@@ -21,7 +21,7 @@ class EditDayActivity : Activity() {
             dayManager.fromJson(trackData)
         }
 
-        setContentView(R.layout.edit_track)
+        setContentView(R.layout.activity_edit_track)
 
         adapter = DayDataAdapter(dayManager, this)
 
@@ -38,6 +38,8 @@ class EditDayActivity : Activity() {
                 timeView.text = dayManager.startDate
             }
         }
+
+
     }
 
     fun onClick(view: View)
