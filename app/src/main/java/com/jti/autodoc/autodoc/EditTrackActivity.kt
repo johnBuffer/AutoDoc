@@ -7,6 +7,9 @@ import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import org.json.JSONObject
+import android.content.Intent
+
+
 
 class EditTrackActivity : Activity() {
     var dayManager = Track()
@@ -48,8 +51,15 @@ class EditTrackActivity : Activity() {
 
     fun onClick(view: View)
     {
-        println("CLICCCC")
         dayManager.addDay()
         adapter.notifyDataSetChanged()
+    }
+
+    // This method will be invoked when user click android device Back menu at bottom.
+    override fun onBackPressed() {
+        val intent = Intent()
+        intent.putExtra("Track name", "This data is returned when user click back menu in target activity.")
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 }

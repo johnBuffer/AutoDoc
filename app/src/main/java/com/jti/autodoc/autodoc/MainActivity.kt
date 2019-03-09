@@ -161,5 +161,8 @@ class MainActivity : Activity() {
         adapter.notifyDataSetChanged()
     }
 
+    override fun onActivityResult(requestCode : Int, resultCode : Int, dataIntent : Intent)
+    {
 
+    }
 }
