@@ -12,7 +12,9 @@ import android.content.Intent
 
 
 class EditTrackActivity : Activity() {
-    var dayManager = Track()
+    var track = Track()
+    var position : Int = 0
+
     private var trackData = JSONObject()
     lateinit var adapter : DayDataAdapter
 
@@ -22,12 +24,13 @@ class EditTrackActivity : Activity() {
         if (intent != null)
         {
             trackData = JSONObject(this.intent.getStringExtra("trackData"))
-            dayManager.fromJson(trackData)
+            position = this.intent.getIntExtra("trackPosition", 0)
+            track.fromJson(trackData)
         }
 
         setContentView(R.layout.activity_edit_track)
 
-        adapter = DayDataAdapter(dayManager, this)
+        adapter = DayDataAdapter(track, this)
 
         // Create the adapter to convert the array to views
         // Attach the adapter to a ListView
@@ -35,12 +38,21 @@ class EditTrackActivity : Activity() {
         listView.adapter = adapter
 
         val timeView = findViewById<TextView>(R.id.startDate)
-        timeView.text = dayManager.startDate
+        timeView.text = track.startDate
         timeView.setOnClickListener {
             PopUpUtils.getCalendarPicker(this) { year: Int, month: Int, day: Int ->
-                dayManager.setDate(year, month + 1, day)
-                timeView.text = dayManager.startDate
+                track.setDate(year, month + 1, day)
+                timeView.text = track.startDate
             }
+        }
+
+        val trackNameView = findViewById<TextView>(R.id.trackName)
+        trackNameView.text = track.name
+        trackNameView.setOnClickListener {
+            PopUpUtils.getTextDialog(this,"Enter track name", track.name, { text : String ->
+                track.name = text
+                trackNameView.text = track.name
+            }, {})
         }
 
         val button = findViewById<Button>(R.id.addDay)
@@ -51,14 +63,16 @@ class EditTrackActivity : Activity() {
 
     fun onClick(view: View)
     {
-        dayManager.addDay()
+        track.addDay()
         adapter.notifyDataSetChanged()
     }
 
     // This method will be invoked when user click android device Back menu at bottom.
-    override fun onBackPressed() {
+    override fun onBackPressed()
+    {
         val intent = Intent()
-        intent.putExtra("Track name", "This data is returned when user click back menu in target activity.")
+        intent.putExtra("trackData", track.toString())
+        intent.putExtra("trackPosition", position)
         setResult(Activity.RESULT_OK, intent)
         finish()
     }

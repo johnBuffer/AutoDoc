@@ -24,7 +24,11 @@ class TrackViewAdapter(private val tracks : ArrayList<Track>, private val mConte
         trackView.setOnClickListener {
             val intent = Intent(mContext, EditTrackActivity::class.java)
             intent.putExtra("trackData", currentTrack.toString())
-            mContext.startActivity(intent)
+            intent.putExtra("trackPosition", position)
+            //mContext.startActivity(intent)
+
+            val superActivity = mContext as MainActivity
+            superActivity.startEditActivity(intent)
         }
 
         trackName.text = currentTrack.name

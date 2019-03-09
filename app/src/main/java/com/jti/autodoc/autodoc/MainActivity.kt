@@ -43,7 +43,7 @@ class MainActivity : Activity() {
 
     private fun updateAlarms()
     {
-        println("Start")
+        //println("Start")
         removeAllAlarms()
 
         var requestCodeId = 0
@@ -85,9 +85,16 @@ class MainActivity : Activity() {
         try {
             outputStream = openFileOutput(filename, Context.MODE_PRIVATE)
 
-            val root = jsonData
-            root.remove("pendingIds")
+            val root = JSONObject()
 
+            val tracksArray = JSONArray()
+            for (track : Track in tracks)
+            {
+                tracksArray.put(track.toJson())
+            }
+            root.put("tracks", tracksArray)
+
+            root.remove("pendingIds")
             val pendingArray = JSONArray()
             for (medoc : MedocDataTime in pendingIds)
             {
@@ -96,7 +103,6 @@ class MainActivity : Activity() {
                 obj.put("description", medoc.description)
                 pendingArray.put(obj)
             }
-
             root.put("pendingIds", pendingArray)
 
             outputStream.write(root.toString().toByteArray())
@@ -161,8 +167,20 @@ class MainActivity : Activity() {
         adapter.notifyDataSetChanged()
     }
 
+    fun startEditActivity(intent : Intent)
+    {
+        startActivityForResult(intent, 0)
+    }
+
     override fun onActivityResult(requestCode : Int, resultCode : Int, dataIntent : Intent)
     {
+        val trackJsonData = JSONObject(dataIntent.getStringExtra("trackData"))
+        val position = dataIntent.getIntExtra("trackPosition", 0)
 
+        val updatedTrack = Track()
+        updatedTrack.fromJson(trackJsonData)
+
+        tracks[position] = updatedTrack
+        adapter.notifyDataSetChanged()
     }
 }
