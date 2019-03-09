@@ -43,35 +43,34 @@ class MainActivity : Activity() {
 
     private fun updateAlarms()
     {
-        //println("Start")
         removeAllAlarms()
 
         var requestCodeId = 0
-
-        /*val startTime = DateUtils.dateToMillis(dayManager.startDate)
         val currentTime = System.currentTimeMillis()
-        val offset = currentTime - startTime
 
-        println("Current time: $currentTime")
-
-        val medocsTiming = dayManager.getAllMedocs(offset)
-
-        for (medoc : MedocDataTime in medocsTiming)
+        for (track : Track in tracks)
         {
-            val onIntent = Intent(this, AlarmReceiver::class.java)
-            onIntent.action = AlarmReceiver.NEW_MEDOC
-            onIntent.putExtra("medoc_description", medoc.description)
+            val startTime = DateUtils.dateToMillis(track.startDate)
+            val offset = currentTime - startTime
+            
+            val medocsTiming = track.getAllMedocs(offset)
 
-            val pendingIntent =
-                PendingIntent.getBroadcast(this, requestCodeId++, onIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            for (medoc: MedocDataTime in medocsTiming) {
+                val onIntent = Intent(this, AlarmReceiver::class.java)
+                onIntent.action = AlarmReceiver.NEW_MEDOC
+                onIntent.putExtra("medoc_description", medoc.description)
 
-            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, startTime + medoc.startOffset, pendingIntent)
+                val pendingIntent =
+                    PendingIntent.getBroadcast(this, requestCodeId++, onIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-            medoc.id = requestCodeId
-            pendingIds.add(medoc)
-            //println("Setting alarm for ${DateUtils.millisToDate(startTime + medoc.startOffset)}")
-        }*/
+                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, startTime + medoc.startOffset, pendingIntent)
+
+                medoc.id = requestCodeId
+                pendingIds.add(medoc)
+                println("Setting alarm for ${DateUtils.millisToDate(startTime + medoc.startOffset)}")
+            }
+        }
     }
 
     override fun onStop() {

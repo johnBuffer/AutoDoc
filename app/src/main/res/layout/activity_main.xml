@@ -9,8 +9,8 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/addTrack"
-            android:id="@+id/tracksView" android:dividerHeight="0dp" app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginTop="16dp" app:layout_constraintTop_toBottomOf="@+id/textView"
+            android:id="@+id/tracksView" android:dividerHeight="0dp" app:layout_constraintHorizontal_bias="0.1"
             app:layout_constraintVertical_bias="1.0" android:divider="@android:color/transparent"/>
     <Button
             android:text="Add Track"
@@ -18,4 +18,11 @@
             android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="16dp" android:id="@+id/addTrack" app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="16dp" android:onClick="onClick"/>
+    <TextView
+            android:text="Tracks"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp" android:id="@+id/textView" android:textSize="36sp"
+            android:textStyle="bold"/>
 </android.support.constraint.ConstraintLayout>

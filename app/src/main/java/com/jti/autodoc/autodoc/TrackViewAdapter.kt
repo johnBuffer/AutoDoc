@@ -31,6 +31,15 @@ class TrackViewAdapter(private val tracks : ArrayList<Track>, private val mConte
             superActivity.startEditActivity(intent)
         }
 
+        // Pops a confirmation dialog to remove the current medoc
+        trackView.setOnLongClickListener {
+            PopUpUtils.getConfirmationPopUp(mContext, "Remove \"" + currentTrack.name + "\" ?",
+                {tracks.remove(currentTrack) ; notifyDataSetChanged()},
+                {}
+            )
+            true
+        }
+
         trackName.text = currentTrack.name
         trackDaysCount.text = currentTrack.days.size.toString()
 
