@@ -8,7 +8,7 @@ import android.widget.ListView
 import android.widget.TextView
 import org.json.JSONObject
 import android.content.Intent
-
+import android.graphics.Color
 
 
 class EditTrackActivity : Activity() {
@@ -59,6 +59,13 @@ class EditTrackActivity : Activity() {
         button.setOnClickListener {
             this.onClick(button)
         }
+
+        val color = findViewById<TextView>(R.id.colorPicker)
+        color.setBackgroundColor(Color.parseColor(track.color))
+        color.setOnClickListener {
+            val colorIntent = Intent(this, ChooseColorActivity::class.java)
+            startActivityForResult(colorIntent, 0)
+        }
     }
 
     fun onClick(view: View)
@@ -75,5 +82,13 @@ class EditTrackActivity : Activity() {
         intent.putExtra("trackPosition", position)
         setResult(Activity.RESULT_OK, intent)
         finish()
+    }
+
+    override fun onActivityResult(requestCode : Int, resultCode : Int, dataIntent : Intent)
+    {
+        val colorCode = dataIntent.getStringExtra("color")
+        track.color = colorCode
+        val color = findViewById<TextView>(R.id.colorPicker)
+        color.setBackgroundColor(Color.parseColor(track.color))
     }
 }

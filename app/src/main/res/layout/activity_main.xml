@@ -13,11 +13,12 @@
             android:id="@+id/tracksView" android:dividerHeight="0dp" app:layout_constraintHorizontal_bias="0.1"
             app:layout_constraintVertical_bias="1.0" android:divider="@android:color/transparent"/>
     <Button
-            android:text="Add Track"
+            android:text="Add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="16dp" android:id="@+id/addTrack" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="16dp" android:onClick="onClick"/>
+            android:layout_marginEnd="16dp" android:onClick="onClick"
+            android:background="@android:drawable/editbox_background"/>
     <TextView
             android:text="Tracks"
             android:layout_width="wrap_content"

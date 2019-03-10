@@ -11,11 +11,13 @@ class Track
     val days = ArrayList<DayDataModel>()
     var startDate: String = "01/01/2019"
     var name = "New Track"
+    var color = "#90d0b6"
 
     fun fromJson(jsonData : JSONObject)
     {
         name = jsonData.getString("name")
         startDate = jsonData.getString("start")
+        color = jsonData.getString("color")
 
         val daysArray = jsonData.getJSONArray("days")
         for (i in 0 until daysArray.length())
@@ -41,6 +43,7 @@ class Track
 
         root.put("name", name)
         root.put("start", startDate)
+        root.put("color", color)
 
         val dayArray = JSONArray()
         for (day : DayDataModel in days)

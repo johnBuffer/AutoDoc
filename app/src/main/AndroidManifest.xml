@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".EditTrackActivity">
         </activity>
+        <activity android:name=".ChooseColorActivity"/>
 
         <receiver android:name=".AlarmReceiver"/>
     </application>

@@ -16,9 +16,6 @@ import android.app.PendingIntent
 import android.app.AlarmManager
 import android.widget.Toast
 import org.json.JSONArray
-import android.R.string.cancel
-
-
 
 
 class MainActivity : Activity() {
@@ -50,8 +47,6 @@ class MainActivity : Activity() {
 
         val currentTime = System.currentTimeMillis()
         var requestCodeId = currentTime.toInt()
-
-        println("*** STAAAAAAAAAAAAAAAAAAAAAAAAAART ***")
 
         for (track : Track in tracks)
         {

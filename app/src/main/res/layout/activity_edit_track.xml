@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent" android:id="@+id/addDay" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" android:background="@android:drawable/editbox_background"/>
     <TextView
             android:text="TextView"
             android:layout_width="wrap_content"

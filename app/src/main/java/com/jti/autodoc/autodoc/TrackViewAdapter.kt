@@ -2,6 +2,7 @@ package com.jti.autodoc.autodoc
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,8 +26,6 @@ class TrackViewAdapter(private val tracks : ArrayList<Track>, private val activi
             val intent = Intent(activity, EditTrackActivity::class.java)
             intent.putExtra("trackData", currentTrack.toString())
             intent.putExtra("trackPosition", position)
-            //mContext.startActivity(intent)
-
             activity.startActivityForResult(intent, 0)
         }
 
@@ -41,6 +40,9 @@ class TrackViewAdapter(private val tracks : ArrayList<Track>, private val activi
 
         trackName.text = currentTrack.name
         trackDaysCount.text = currentTrack.days.size.toString()
+
+        val colorView = trackView.findViewById<TextView>(R.id.trackColorView)
+        colorView.setBackgroundColor(Color.parseColor(currentTrack.color))
 
         return trackView
     }
