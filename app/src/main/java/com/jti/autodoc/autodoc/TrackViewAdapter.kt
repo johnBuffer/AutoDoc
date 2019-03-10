@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 
-class TrackViewAdapter(private val tracks : ArrayList<Track>, private val mContext: Context) :
-    ArrayAdapter<Track>(mContext, R.layout.activity_main, tracks)
+class TrackViewAdapter(private val tracks : ArrayList<Track>, private val activity: MainActivity) :
+    ArrayAdapter<Track>(activity, R.layout.activity_main, tracks)
 {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
     {
@@ -22,18 +22,17 @@ class TrackViewAdapter(private val tracks : ArrayList<Track>, private val mConte
         val trackDaysCount = trackView.findViewById<TextView>(R.id.trackDaysCount)
 
         trackView.setOnClickListener {
-            val intent = Intent(mContext, EditTrackActivity::class.java)
+            val intent = Intent(activity, EditTrackActivity::class.java)
             intent.putExtra("trackData", currentTrack.toString())
             intent.putExtra("trackPosition", position)
             //mContext.startActivity(intent)
 
-            val superActivity = mContext as MainActivity
-            superActivity.startEditActivity(intent)
+            activity.startActivityForResult(intent, 0)
         }
 
         // Pops a confirmation dialog to remove the current medoc
         trackView.setOnLongClickListener {
-            PopUpUtils.getConfirmationPopUp(mContext, "Remove \"" + currentTrack.name + "\" ?",
+            PopUpUtils.getConfirmationPopUp(activity, "Remove \"" + currentTrack.name + "\" ?",
                 {tracks.remove(currentTrack) ; notifyDataSetChanged()},
                 {}
             )

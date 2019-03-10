@@ -16,6 +16,9 @@ import android.app.PendingIntent
 import android.app.AlarmManager
 import android.widget.Toast
 import org.json.JSONArray
+import android.R.string.cancel
+
+
 
 
 class MainActivity : Activity() {
@@ -63,14 +66,19 @@ class MainActivity : Activity() {
                 val onIntent = Intent(this, AlarmReceiver::class.java)
                 onIntent.action = AlarmReceiver.NEW_MEDOC
                 onIntent.putExtra("medoc_description", medoc.description)
+                onIntent.putExtra("medoc_track", medoc.track)
 
-                val pendingIntent =
-                    PendingIntent.getBroadcast(this, requestCodeId++, onIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                medoc.id = requestCodeId++
+                val pendingIntent = PendingIntent.getBroadcast(
+                    applicationContext,
+                    medoc.id,
+                    onIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT)
 
                 val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, startTime + medoc.startOffset, pendingIntent)
 
-                medoc.id = requestCodeId
+
                 pendingIds.add(medoc)
                 println("Setting alarm for ${DateUtils.millisToDate(startTime + medoc.startOffset)}")
             }
@@ -102,8 +110,9 @@ class MainActivity : Activity() {
             for (medoc : MedocDataTime in pendingIds)
             {
                 val obj = JSONObject()
-                obj.put("id", medoc.id)
                 obj.put("description", medoc.description)
+                obj.put("track", medoc.track)
+                obj.put("id", medoc.id)
                 pendingArray.put(obj)
             }
             root.put("pendingIds", pendingArray)
@@ -123,11 +132,25 @@ class MainActivity : Activity() {
             val onIntent = Intent(this, AlarmReceiver::class.java)
             onIntent.action = AlarmReceiver.NEW_MEDOC
             onIntent.putExtra("medoc_description", medoc.description)
+            onIntent.putExtra("medoc_track", medoc.track)
 
-            val pendingIntent =
-                PendingIntent.getBroadcast(this, medoc.id, onIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-            alarmManager.cancel(pendingIntent)
+            val pendingIntent = PendingIntent.getBroadcast(
+                applicationContext,
+                medoc.id,
+                onIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+            try {
+                alarmManager.cancel(pendingIntent)
+            } catch (e: Exception) {
+               println("AlarmManager update was not canceled. $e")
+            }
+
+
         }
+
+        pendingIds.clear()
     }
 
     // Load previous data from JSON file
@@ -149,7 +172,8 @@ class MainActivity : Activity() {
             val currentID = array.getJSONObject(i)
             val medocID = currentID.getInt("id")
             val medocDescription = currentID.getString("description")
-            pendingIds.add(MedocDataTime(0, medocDescription, medocID))
+            val medocTrack = currentID.getString("track")
+            pendingIds.add(MedocDataTime(0, medocDescription, medocTrack, medocID))
         }
     }
 
@@ -168,11 +192,6 @@ class MainActivity : Activity() {
     {
         tracks.add(Track())
         adapter.notifyDataSetChanged()
-    }
-
-    fun startEditActivity(intent : Intent)
-    {
-        startActivityForResult(intent, 0)
     }
 
     override fun onActivityResult(requestCode : Int, resultCode : Int, dataIntent : Intent)
