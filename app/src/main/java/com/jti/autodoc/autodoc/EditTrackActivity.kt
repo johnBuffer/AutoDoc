@@ -87,8 +87,11 @@ class EditTrackActivity : Activity() {
     override fun onActivityResult(requestCode : Int, resultCode : Int, dataIntent : Intent)
     {
         val colorCode = dataIntent.getStringExtra("color")
-        track.color = colorCode
-        val color = findViewById<TextView>(R.id.colorPicker)
-        color.setBackgroundColor(Color.parseColor(track.color))
+
+        if (colorCode.length > 0) {
+            track.color = colorCode
+            val color = findViewById<TextView>(R.id.colorPicker)
+            color.setBackgroundColor(Color.parseColor(track.color))
+        }
     }
 }

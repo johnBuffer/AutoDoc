@@ -51,6 +51,11 @@ class ChooseColorActivity : Activity()
         listView.adapter = adapter
     }
 
+    override fun onBackPressed()
+    {
+        returnResult("")
+    }
+
     fun returnResult(code : String)
     {
         val intent = Intent()
