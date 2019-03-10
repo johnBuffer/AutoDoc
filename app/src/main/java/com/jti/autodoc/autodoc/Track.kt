@@ -4,7 +4,11 @@ import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.collections.ArrayList
 
-data class MedocDataTime(val startOffset : Long, val description: String, var track : String, var id: Int)
+data class MedocDataTime(val startOffset : Long,
+                         val description: String,
+                         var track : String,
+                         var color : String,
+                         var id: Int)
 
 class Track
 {
@@ -98,7 +102,7 @@ class Track
                     {
                         //println("Found medoc at " + medoc.time + " -> OK (Offset time : ${(currentDay + i)* DateUtils.MS_PER_DAY + medocTime})")
                         val offset = (currentDay + i)* DateUtils.MS_PER_DAY + medocTime
-                        timings.add(MedocDataTime(offset, medoc.description, name, 0))
+                        timings.add(MedocDataTime(offset, medoc.description, name, color, 0))
                     }
                 }
             }

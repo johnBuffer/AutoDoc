@@ -62,6 +62,7 @@ class MainActivity : Activity() {
                 onIntent.action = AlarmReceiver.NEW_MEDOC
                 onIntent.putExtra("medoc_description", medoc.description)
                 onIntent.putExtra("medoc_track", medoc.track)
+                onIntent.putExtra("track_color", medoc.color)
 
                 medoc.id = requestCodeId++
                 val pendingIntent = PendingIntent.getBroadcast(
@@ -128,6 +129,7 @@ class MainActivity : Activity() {
             onIntent.action = AlarmReceiver.NEW_MEDOC
             onIntent.putExtra("medoc_description", medoc.description)
             onIntent.putExtra("medoc_track", medoc.track)
+            onIntent.putExtra("track_color", medoc.color)
 
             val pendingIntent = PendingIntent.getBroadcast(
                 applicationContext,
@@ -141,8 +143,6 @@ class MainActivity : Activity() {
             } catch (e: Exception) {
                println("AlarmManager update was not canceled. $e")
             }
-
-
         }
 
         pendingIds.clear()
@@ -168,7 +168,9 @@ class MainActivity : Activity() {
             val medocID = currentID.getInt("id")
             val medocDescription = currentID.getString("description")
             val medocTrack = currentID.getString("track")
-            pendingIds.add(MedocDataTime(0, medocDescription, medocTrack, medocID))
+            val medocColor = currentID.getString("track_color")
+
+            pendingIds.add(MedocDataTime(0, medocDescription, medocTrack, medocColor, medocID))
         }
     }
 
@@ -185,8 +187,16 @@ class MainActivity : Activity() {
 
     fun onClick(view: View)
     {
-        tracks.add(Track())
-        adapter.notifyDataSetChanged()
+        PopUpUtils.getTextDialog(this, "New track name", "") { name: String ->
+            val newTrack = Track()
+            newTrack.name = name
+            PopUpUtils.getCalendarPicker(this) { year: Int, month: Int, day: Int ->
+                newTrack.setDate(year, month + 1, day)
+                tracks.add(newTrack)
+                adapter.notifyDataSetChanged()
+            }
+
+        }
     }
 
     override fun onActivityResult(requestCode : Int, resultCode : Int, dataIntent : Intent)

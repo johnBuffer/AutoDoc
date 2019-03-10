@@ -5,13 +5,14 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 
 class NotificationBuilder
 {
     companion object {
-        fun getMedocNotification(context : Context, pendingIntent : PendingIntent, title : String, description : String) : Notification
+        fun getMedocNotification(context : Context, pendingIntent : PendingIntent, title : String, description : String, color : String = "#FFFFFF") : Notification
         {
             val builder = NotificationCompat.Builder(context, "default")
                 .setSmallIcon(R.drawable.notification_img)
@@ -23,6 +24,8 @@ class NotificationBuilder
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
+                .setColorized(true)
+                .setColor(Color.parseColor(color))
 
             return builder.build()
         }

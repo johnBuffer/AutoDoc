@@ -18,6 +18,11 @@ import android.widget.DatePicker
 class PopUpUtils
 {
     companion object {
+        fun getConfirmationPopUp(context : Context, question : String, lambdaYes: () -> Unit) : AlertDialog.Builder
+        {
+            return getConfirmationPopUp(context, question, lambdaYes, {})
+        }
+
         fun getConfirmationPopUp(context : Context, question : String, lambdaYes: () -> Unit, lambdaNo: () -> Unit) : AlertDialog.Builder
         {
             val dialogClickListener = DialogInterface.OnClickListener { _, which ->
@@ -54,6 +59,11 @@ class PopUpUtils
             timePicker.show()
 
             return timePicker
+        }
+
+        fun getTextDialog(context : Context, title : String, text : String, lambdaYes: (String) -> Unit)
+        {
+            getTextDialog(context, title, text, lambdaYes, {})
         }
 
         fun getTextDialog(context : Context, title : String, text : String, lambdaYes: (String) -> Unit, lambdaNo: () -> Unit)

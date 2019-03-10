@@ -49,10 +49,10 @@ class EditTrackActivity : Activity() {
         val trackNameView = findViewById<TextView>(R.id.trackName)
         trackNameView.text = track.name
         trackNameView.setOnClickListener {
-            PopUpUtils.getTextDialog(this,"Enter track name", track.name, { text : String ->
+            PopUpUtils.getTextDialog(this,"Enter track name", track.name) { text : String ->
                 track.name = text
                 trackNameView.text = track.name
-            }, {})
+            }
         }
 
         val button = findViewById<Button>(R.id.addDay)

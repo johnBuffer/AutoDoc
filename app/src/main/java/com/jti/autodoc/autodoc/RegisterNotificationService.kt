@@ -21,7 +21,8 @@ class AlarmReceiver : BroadcastReceiver()
         with(NotificationManagerCompat.from(context)) {
             val description = intent.extras.getString("medoc_description")
             val track = intent.extras.getString("medoc_track")
-            notify(notificationId, NotificationBuilder.getMedocNotification(context, pendingIntent, "It's time ! ($track)", description))
+            val color = intent.extras.getString("track_color")
+            notify(notificationId, NotificationBuilder.getMedocNotification(context, pendingIntent, "It's time ! ($track)", description!!, color!!))
         }
     }
 }
