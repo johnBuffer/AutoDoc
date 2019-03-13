@@ -107,7 +107,7 @@ class MainActivity : Activity() {
                 pendingArray.put(medoc.toJson())
             }
             root.put("pendingIds", pendingArray)
-            
+
             outputStream.write(root.toString().toByteArray())
             outputStream.close()
         } catch (e: Exception) {
