@@ -4,11 +4,45 @@ import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.collections.ArrayList
 
-data class MedocDataTime(val startOffset : Long,
-                         val description: String,
-                         var track : String,
-                         var color : String,
-                         var id: Int)
+class MedocDataTime
+{
+    var startOffset : Long = 0
+    var description: String = ""
+    var track : String = ""
+    var color : String = ""
+    var id: Int = 0
+
+    constructor(start: Long, description: String, track: String, color: String, id: Int)
+    {
+        this.id = id
+        this.description = description
+        this.startOffset = start
+        this.track = track
+        this.color = color
+    }
+
+    constructor(jsonData: JSONObject)
+    {
+        id = jsonData.getInt("id")
+        description = jsonData.getString("description")
+        startOffset = jsonData.getLong("startOffset")
+        track = jsonData.getString("track")
+        color = jsonData.getString("track_color")
+    }
+
+    fun toJson() :JSONObject
+    {
+        val obj = JSONObject()
+
+        obj.put("id", id)
+        obj.put("description", description)
+        obj.put("startOffset", startOffset)
+        obj.put("track", track)
+        obj.put("track_color", color)
+
+        return obj
+    }
+}
 
 class Track
 {
@@ -94,7 +128,7 @@ class Track
             val day = days[currentIndex]
             if (day.medocs.size > 0)
             {
-                println("Searching for medoc in day $currentIndex at timeInDay: $timeInDay (${DateUtils.millisTOTime(timeInDay.toInt())})")
+                //println("Searching for medoc in day $currentIndex at timeInDay: $timeInDay (${DateUtils.millisTOTime(timeInDay.toInt())})")
                 for (medoc : MedocData in day.medocs)
                 {
                     val medocTime = DateUtils.timeToMillis(medoc.time)
