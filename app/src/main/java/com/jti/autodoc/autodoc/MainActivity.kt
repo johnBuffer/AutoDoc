@@ -180,7 +180,7 @@ class MainActivity : Activity() {
 
     fun onClick(view: View)
     {
-        PopUpUtils.getTextDialog(this, "New track name", "") { name: String ->
+        PopUpUtils.getTextDialog(this, "New track name", "", "This can be changed later") { name: String ->
             val newTrack = Track()
             newTrack.name = name
             PopUpUtils.getCalendarPicker(this) { year: Int, month: Int, day: Int ->

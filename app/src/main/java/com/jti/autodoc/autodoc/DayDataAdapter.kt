@@ -37,7 +37,7 @@ class DayDataAdapter(private val track: Track, private var mContext: Context) :
 
         // Pops a text input dialog to change medoc's description
         descriptionView.setOnClickListener {
-            PopUpUtils.getTextDialog(context, "Enter description", descriptionView.text.toString()) { description : String ->
+            PopUpUtils.getTextDialog(context, "Enter description", descriptionView.text.toString(), "") { description : String ->
                 medoc.description = description
                 notifyDataSetChanged()
             }
@@ -110,7 +110,7 @@ class DayDataAdapter(private val track: Track, private var mContext: Context) :
         // Add the "add" button to add a new medoc
         viewHolder.button!!.setOnClickListener {
             PopUpUtils.getTimePicker(context) { selectedHour, selectedMinute ->
-                PopUpUtils.getTextDialog(context, "Enter description", "") { description : String ->
+                PopUpUtils.getTextDialog(context, "Enter description", "", "") { description : String ->
                     val newMedoc = MedocData(description, "")
                     newMedoc.setTime(selectedHour, selectedMinute)
                     currentDay.addMedoc(newMedoc)
