@@ -8,9 +8,12 @@ import java.util.*
 import android.text.InputType
 import android.widget.EditText
 import android.app.DatePickerDialog
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.DatePicker
-
+import android.widget.TextView
+import android.text.Selection
+import android.text.Editable
 
 
 
@@ -61,22 +64,28 @@ class PopUpUtils
             return timePicker
         }
 
-        fun getTextDialog(context : Context, title : String, text : String, lambdaYes: (String) -> Unit)
+        fun getTextDialog(context : Context, title : String, text : String, notice : String, lambdaYes: (String) -> Unit)
         {
-            getTextDialog(context, title, text, lambdaYes, {})
+            getTextDialog(context, title, text, notice, lambdaYes, {})
         }
 
-        fun getTextDialog(context : Context, title : String, text : String, lambdaYes: (String) -> Unit, lambdaNo: () -> Unit)
+        fun getTextDialog(context : Context, title : String, text : String, notice : String, lambdaYes: (String) -> Unit, lambdaNo: () -> Unit)
         {
+            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val dialogView = inflater.inflate(R.layout.text_input_dialog, null, false)
+
             val builder = AlertDialog.Builder(context)
             builder.setTitle(title)
+            builder.setView(dialogView)
 
-            // Set up the input
-            val input = EditText(context)
-            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-            input.inputType = InputType.TYPE_CLASS_TEXT
+            val input = dialogView.findViewById<EditText>(R.id.editText)
             input.setText(text)
-            builder.setView(input)
+            val position = input.length()
+            val etext = input.text
+            Selection.setSelection(etext, position)
+
+            val noticeView = dialogView.findViewById<TextView>(R.id.noticeText)
+            noticeView.text = notice
 
             // Set up the buttons
             builder.setPositiveButton(
