@@ -74,11 +74,11 @@ class MainActivity : Activity() {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, startTime + medoc.startOffset, pendingIntent)
 
                 pendingIds.add(medoc)
-                //println("Setting alarm for ${DateUtils.millisToDate(startTime + medoc.startOffset)}")
+                println("Setting alarm for ${DateUtils.millisToDate(startTime + medoc.startOffset)}")
             }
         }
 
-        println("Alarms added: ${pendingIds.size}")
+        //println("Alarms added: ${pendingIds.size}")
     }
 
     override fun onStop() {
@@ -121,7 +121,6 @@ class MainActivity : Activity() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         for (medoc : MedocDataTime in pendingIds)
         {
-            //println("LOOOL")
             val onIntent = Intent(applicationContext, AlarmReceiver::class.java)
             onIntent.action = AlarmReceiver.NEW_MEDOC
             onIntent.putExtra("medoc_description", medoc.description)
