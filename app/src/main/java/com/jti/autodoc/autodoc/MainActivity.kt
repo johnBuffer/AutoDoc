@@ -1,17 +1,13 @@
 package com.jti.autodoc.autodoc
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
-import android.widget.TextView
 import org.json.JSONObject
 import java.io.*
 import android.content.Intent
 import android.app.*
-import android.os.Build
-import android.support.annotation.RequiresApi
 import android.app.PendingIntent
 import android.app.AlarmManager
 import android.widget.Toast
@@ -85,7 +81,7 @@ class MainActivity : Activity() {
         super.onStop()
 
         updateAlarms()
-        Toast.makeText(this, "Alarms have been updated", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.updated_alarms_notice), Toast.LENGTH_SHORT).show()
 
         val filename = SAVE_FILE_NAME
         val outputStream: FileOutputStream
@@ -179,7 +175,7 @@ class MainActivity : Activity() {
 
     fun onClick(view: View)
     {
-        PopUpUtils.getTextDialog(this, "New track name", "", "This can be changed later") { name: String ->
+        PopUpUtils.getTextDialog(this, getString(R.string.new_track_name), "", getString(R.string.new_track_notice)) { name: String ->
             val newTrack = Track()
             newTrack.name = name
             PopUpUtils.getCalendarPicker(this) { year: Int, month: Int, day: Int ->
