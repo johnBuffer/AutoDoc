@@ -4,4 +4,7 @@
     <string name="button_send">Send</string>
     <string name="app_notif_channel">AutoDocNotification</string>
     <string name="app_notif_channel_description">Notify when a medoc need to be taken</string>
+    <string name="new_track_name">New track name</string>
+    <string name="new_track_notice">This can be changed later</string>
+    <string name="updated_alarms_notice">Alarms has been updated</string>
 </resources>
