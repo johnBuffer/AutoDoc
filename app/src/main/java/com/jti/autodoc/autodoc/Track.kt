@@ -123,7 +123,7 @@ class Track
         //println("Current day in program : $currentDayInProgram, day since start : $currentDay")
         for (i : Int in 0 until size + 1)
         {
-            // Care for futur START DATE !!!
+            // Care for future START DATE !!!
             val currentIndex = ((i + currentDayInProgram)%size).toInt()
             val day = days[currentIndex]
             if (day.medocs.size > 0)

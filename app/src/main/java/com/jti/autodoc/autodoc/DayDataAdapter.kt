@@ -17,7 +17,7 @@ class DayDataAdapter(private val track: Track, private var mContext: Context) :
         var button : Button? = null
     }
 
-    private fun getMedocView(day : DayDataModel, medoc : MedocData, parent: ViewGroup) : View
+    private fun getMedocView(day : DayDataModel, medoc : MedocData, parent: ViewGroup, context: Context) : View
     {
         // Initialize views to be inflated
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -37,7 +37,8 @@ class DayDataAdapter(private val track: Track, private var mContext: Context) :
 
         // Pops a text input dialog to change medoc's description
         descriptionView.setOnClickListener {
-            PopUpUtils.getTextDialog(context, "Enter description", descriptionView.text.toString(), "") { description : String ->
+            val message = context.getString(R.string.medoc_description)
+            PopUpUtils.getTextDialog(context, message, descriptionView.text.toString(), "") { description : String ->
                 medoc.description = description
                 notifyDataSetChanged()
             }
@@ -45,7 +46,7 @@ class DayDataAdapter(private val track: Track, private var mContext: Context) :
 
         // Pops a confirmation dialog to remove the current medoc
         descriptionView.setOnLongClickListener {
-            PopUpUtils.getConfirmationPopUp(mContext, "Remove \"" + medoc.description + "\" ?",
+            PopUpUtils.getConfirmationPopUp(mContext, mContext.getString(R.string.remove_medoc, medoc.description),
                 {day.removeMedoc(medoc) ; notifyDataSetChanged()},
                 {}
             )
@@ -87,10 +88,10 @@ class DayDataAdapter(private val track: Track, private var mContext: Context) :
         currentDay.sortMedocs()
 
         // Set day's name and add removal dialog
-        val dayID = currentDay.dayID.toString()
-        viewHolder.dayNameView!!.text = "Day $dayID"
+        val dayID = currentDay.dayID
+        viewHolder.dayNameView!!.text = mContext.getString(R.string.day_number_display, dayID)
         viewHolder.dayNameView!!.setOnLongClickListener {
-            PopUpUtils.getConfirmationPopUp(mContext, "Remove Day $dayID ?",
+            PopUpUtils.getConfirmationPopUp(mContext, mContext.getString(R.string.day_remove_confirmation, dayID),
                 {track.removeDay(currentDay) ; notifyDataSetChanged()},
                 {}
             )
@@ -104,13 +105,13 @@ class DayDataAdapter(private val track: Track, private var mContext: Context) :
         viewHolder.medocView!!.removeAllViews()
         for (medoc : MedocData in currentDay.medocs)
         {
-            viewHolder.medocView!!.addView(getMedocView(currentDay, medoc, parent))
+            viewHolder.medocView!!.addView(getMedocView(currentDay, medoc, parent, context))
         }
 
         // Add the "add" button to add a new medoc
         viewHolder.button!!.setOnClickListener {
             PopUpUtils.getTimePicker(context) { selectedHour, selectedMinute ->
-                PopUpUtils.getTextDialog(context, "Enter description", "", "") { description : String ->
+                PopUpUtils.getTextDialog(context, context.getString(R.string.medoc_description), "", "") { description : String ->
                     val newMedoc = MedocData(description, "")
                     newMedoc.setTime(selectedHour, selectedMinute)
                     currentDay.addMedoc(newMedoc)

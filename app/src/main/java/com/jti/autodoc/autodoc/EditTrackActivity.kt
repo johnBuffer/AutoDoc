@@ -49,7 +49,7 @@ class EditTrackActivity : Activity() {
         val trackNameView = findViewById<TextView>(R.id.trackName)
         trackNameView.text = track.name
         trackNameView.setOnClickListener {
-            PopUpUtils.getTextDialog(this,"Enter track name", track.name, "New name") { text : String ->
+            PopUpUtils.getTextDialog(this,getString(R.string.new_track_name), track.name, "") { text : String ->
                 track.name = text
                 trackNameView.text = track.name
             }
@@ -88,7 +88,7 @@ class EditTrackActivity : Activity() {
     {
         val colorCode = dataIntent.getStringExtra("color")
 
-        if (colorCode.length > 0) {
+        if (colorCode.isNotEmpty()) {
             track.color = colorCode
             val color = findViewById<TextView>(R.id.colorPicker)
             color.setBackgroundColor(Color.parseColor(track.color))

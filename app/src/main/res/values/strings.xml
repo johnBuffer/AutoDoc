@@ -7,4 +7,8 @@
     <string name="new_track_name">New track name</string>
     <string name="new_track_notice">This can be changed later</string>
     <string name="updated_alarms_notice">Alarms has been updated</string>
+    <string name="medoc_description">Enter description</string>
+    <string name="day_remove_confirmation">Remove day %1$d ?</string>
+    <string name="day_number_display">Day %1$d</string>
+    <string name="remove_medoc">Remove %1$s ?</string>
 </resources>
