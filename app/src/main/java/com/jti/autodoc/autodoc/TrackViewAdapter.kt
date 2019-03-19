@@ -31,8 +31,7 @@ class TrackViewAdapter(private val tracks : ArrayList<Track>, private val activi
 
         // Pops a confirmation dialog to remove the current medoc
         trackView.setOnLongClickListener {
-            PopUpUtils.getConfirmationPopUp(activity, "Remove \"" + currentTrack.name + "\" ?"
-            ) {tracks.remove(currentTrack) ; notifyDataSetChanged()}
+            PopUpUtils.getConfirmationPopUp(activity, activity.getString(R.string.remove_medoc, currentTrack.name)) {tracks.remove(currentTrack) ; notifyDataSetChanged()}
             true
         }
 
