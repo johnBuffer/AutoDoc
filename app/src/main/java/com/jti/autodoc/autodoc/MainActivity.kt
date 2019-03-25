@@ -21,7 +21,8 @@ class MainActivity : Activity() {
     lateinit var adapter : TrackViewAdapter
 
     companion object {
-        const val SAVE_FILE_NAME = "data.json"
+        const val SAVE_FILE_PROGRAM_NAME = "data.json"
+        const val SAVE_FILE_PENDINGS_NAME = "pendings.json"
         var NOTIFICATION_ID = 0
     }
 
@@ -81,16 +82,12 @@ class MainActivity : Activity() {
     {
         super.onStop()
 
-        updateAlarms()
-        Toast.makeText(this, getString(R.string.updated_alarms_notice), Toast.LENGTH_SHORT).show()
-
-        val filename = SAVE_FILE_NAME
+        val filename = SAVE_FILE_PROGRAM_NAME
         val outputStream: FileOutputStream
         try {
             outputStream = openFileOutput(filename, Context.MODE_PRIVATE)
 
             val root = JSONObject()
-
             val tracksArray = JSONArray()
             for (track : Track in tracks)
             {
@@ -98,6 +95,20 @@ class MainActivity : Activity() {
             }
             root.put("tracks", tracksArray)
 
+            outputStream.write(root.toString().toByteArray())
+            outputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        updateAlarms()
+        Toast.makeText(this, getString(R.string.updated_alarms_notice), Toast.LENGTH_SHORT).show()
+
+        val filenamePendings = SAVE_FILE_PENDINGS_NAME
+        val outputStreamPendings: FileOutputStream
+        try {
+            outputStreamPendings = openFileOutput(filenamePendings, Context.MODE_PRIVATE)
+            val root = JSONObject()
             val pendingArray = JSONArray()
             for (medoc : MedocDataTime in pendingIds)
             {
@@ -105,8 +116,8 @@ class MainActivity : Activity() {
             }
             root.put("pendingIds", pendingArray)
 
-            outputStream.write(root.toString().toByteArray())
-            outputStream.close()
+            outputStreamPendings.write(root.toString().toByteArray())
+            outputStreamPendings.close()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -145,10 +156,14 @@ class MainActivity : Activity() {
     // Load previous data from JSON file
     private fun loadData() = try
     {
-        val data = FileUtils.getStringFromFile(SAVE_FILE_NAME, this)
-        val jsonData = JSONObject(data)
-        loadTracks(jsonData.getJSONArray("tracks"))
-        loadPendingIDs(jsonData.getJSONArray("pendingIds"))
+        val dataProgram = FileUtils.getStringFromFile(SAVE_FILE_PROGRAM_NAME, this)
+        val jsonDataProgram = JSONObject(dataProgram)
+
+        loadTracks(jsonDataProgram.getJSONArray("tracks"))
+
+        val dataPendings = FileUtils.getStringFromFile(SAVE_FILE_PENDINGS_NAME, this)
+        val jsonDataPendings = JSONObject(dataPendings)
+        loadPendingIDs(jsonDataPendings.getJSONArray("pendingIds"))
     }
     catch (e: Exception) {
         e.printStackTrace()
