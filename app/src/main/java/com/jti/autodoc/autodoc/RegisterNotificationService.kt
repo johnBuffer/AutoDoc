@@ -1,4 +1,5 @@
 package com.jti.autodoc.autodoc
+import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_ONE_SHOT
 import android.app.PendingIntent.getActivity
 import android.content.Context
@@ -22,7 +23,18 @@ class AlarmReceiver : BroadcastReceiver()
             val description = intent.extras.getString("medoc_description")
             val track = intent.extras.getString("medoc_track")
             val color = intent.extras.getString("track_color")
-            notify(notificationId, NotificationBuilder.getMedocNotification(context, pendingIntent, "It's time ! ($track)", description!!, color!!))
+
+            val onIntent = Intent(context.applicationContext, AlarmUpdateService::class.java)
+            val pendingIntentAction = PendingIntent.getService(
+                context.applicationContext,
+                System.currentTimeMillis().toInt(),
+                onIntent,
+                PendingIntent.FLAG_ONE_SHOT)
+
+            val notification = NotificationBuilder.getMedocNotification(context, pendingIntent, "It's time ! ($track)", description!!, color!!)
+            notification.addAction(R.drawable.notification_ok_img, "Done", pendingIntentAction)
+
+            notify(notificationId, notification.build())
         }
     }
 }

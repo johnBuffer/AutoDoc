@@ -15,8 +15,8 @@ import org.json.JSONArray
 
 
 class MainActivity : Activity() {
-    private val pendingIds = ArrayList<MedocDataTime>()
-    private val tracks = ArrayList<Track>()
+    private var pendingIds = ArrayList<MedocDataTime>()
+    private var tracks = ArrayList<Track>()
 
     lateinit var adapter : TrackViewAdapter
 
@@ -35,87 +35,20 @@ class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
         val listView = findViewById<ListView>(R.id.tracksView)
         listView.adapter = adapter
-    }
 
-    private fun updateAlarms()
-    {
-        removeAllAlarms()
-
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val currentTime = System.currentTimeMillis()
-        var requestCodeId = currentTime.toInt()
-
-        for (track : Track in tracks)
-        {
-            println("\nTrack ${track.name}")
-            val startTime = DateUtils.dateToMillis(track.startDate)
-            val offset = currentTime - startTime
-
-            val medocsTiming = track.getAllMedocs(offset)
-
-            for (medoc: MedocDataTime in medocsTiming)
-            {
-                val onIntent = Intent(applicationContext, AlarmReceiver::class.java)
-                onIntent.action = AlarmReceiver.NEW_MEDOC
-                onIntent.putExtra("medoc_description", medoc.description)
-                onIntent.putExtra("medoc_track", medoc.track)
-                onIntent.putExtra("track_color", medoc.color)
-
-                medoc.id = requestCodeId++
-                val pendingIntent = PendingIntent.getBroadcast(
-                    applicationContext,
-                    medoc.id,
-                    onIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT)
-
-                val alarmTime = startTime + medoc.startOffset
-
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent)
-
-                pendingIds.add(medoc)
-                println("Setting alarm for ${DateUtils.millisToDate(alarmTime)}")
-            }
-        }
+        NotificationBuilder.createNotificationChannel(this)
     }
 
     override fun onStop()
     {
         super.onStop()
 
-        updateAlarms()
+        JsonUtils.writeJsonToFile(SAVE_FILE_PROGRAM_NAME, JsonUtils.tracksArrayToJson(tracks), this)
+
+        AlarmUtils.updateAlarms(tracks, pendingIds, this)
         Toast.makeText(this, getString(R.string.updated_alarms_notice), Toast.LENGTH_SHORT).show()
 
-        JsonUtils.writeJsonToFile(SAVE_FILE_PROGRAM_NAME, tracksToJson(), this)
-
-        JsonUtils.writeJsonToFile(SAVE_FILE_PENDINGS_NAME, pendingsToJson(), this)
-    }
-
-    private fun removeAllAlarms()
-    {
-        //println("Alarms to remove: ${pendingIds.size}")
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        for (medoc : MedocDataTime in pendingIds)
-        {
-            val onIntent = Intent(applicationContext, AlarmReceiver::class.java)
-            onIntent.action = AlarmReceiver.NEW_MEDOC
-            onIntent.putExtra("medoc_description", medoc.description)
-            onIntent.putExtra("medoc_track", medoc.track)
-            onIntent.putExtra("track_color", medoc.color)
-
-            val pendingIntent = PendingIntent.getBroadcast(
-                applicationContext,
-                medoc.id,
-                onIntent,
-                PendingIntent.FLAG_NO_CREATE
-            )
-
-            try {
-                alarmManager.cancel(pendingIntent)
-            } catch (e: Exception) {
-            }
-        }
-
-        pendingIds.clear()
+        JsonUtils.writeJsonToFile(SAVE_FILE_PENDINGS_NAME, JsonUtils.pendingsArrayToJson(pendingIds), this)
     }
 
     // Load previous data from JSON file
@@ -123,35 +56,14 @@ class MainActivity : Activity() {
     {
         val dataProgram = FileUtils.getStringFromFile(SAVE_FILE_PROGRAM_NAME, this)
         val jsonDataProgram = JSONObject(dataProgram)
-
-        loadTracks(jsonDataProgram.getJSONArray("tracks"))
+        tracks = JsonUtils.loadTracks(jsonDataProgram.getJSONArray("tracks"))
 
         val dataPendings = FileUtils.getStringFromFile(SAVE_FILE_PENDINGS_NAME, this)
         val jsonDataPendings = JSONObject(dataPendings)
-        loadPendingIDs(jsonDataPendings.getJSONArray("pendingIds"))
+        pendingIds = JsonUtils.loadPendingIDs(jsonDataPendings.getJSONArray("pendingIds"))
     }
     catch (e: Exception) {
         e.printStackTrace()
-    }
-
-    private fun loadPendingIDs(array : JSONArray)
-    {
-        for (i in 0 until array.length())
-        {
-            val jsonData : JSONObject = array.getJSONObject(i)
-            pendingIds.add(MedocDataTime(jsonData))
-        }
-    }
-
-    private fun loadTracks(array : JSONArray)
-    {
-        for (i in 0 until array.length())
-        {
-            val currentTrack = array.getJSONObject(i)
-            val newTrack = Track()
-            newTrack.fromJson(currentTrack)
-            tracks.add(newTrack)
-        }
     }
 
     fun onClick(view: View)
@@ -179,31 +91,4 @@ class MainActivity : Activity() {
         tracks[position] = updatedTrack
         adapter.notifyDataSetChanged()
     }
-
-    private fun tracksToJson() : JSONObject
-    {
-        val root = JSONObject()
-        val tracksArray = JSONArray()
-        for (track : Track in tracks)
-        {
-            tracksArray.put(track.toJson())
-        }
-        root.put("tracks", tracksArray)
-
-        return root
-    }
-
-    private fun pendingsToJson() : JSONObject
-    {
-        val root = JSONObject()
-        val pendingArray = JSONArray()
-        for (medoc : MedocDataTime in pendingIds)
-        {
-            pendingArray.put(medoc.toJson())
-        }
-        root.put("pendingIds", pendingArray)
-
-        return root
-    }
-
 }
