@@ -77,7 +77,8 @@ class MainActivity : Activity() {
         //println("Alarms added: ${pendingIds.size}")
     }
 
-    override fun onStop() {
+    override fun onStop()
+    {
         super.onStop()
 
         updateAlarms()
