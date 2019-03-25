@@ -20,6 +20,7 @@
         <activity android:name=".ChooseColorActivity"/>
 
         <receiver android:name=".AlarmReceiver"/>
+        <service android:name=".AlarmUpdateService"/>
     </application>
 
 
