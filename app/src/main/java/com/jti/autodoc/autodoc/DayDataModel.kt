@@ -34,8 +34,8 @@ data class DayDataModel(val dayID: Int)
 
     fun toJson() : JSONObject
     {
-        var dayData = JSONObject()
-        var medocArray = JSONArray()
+        val dayData = JSONObject()
+        val medocArray = JSONArray()
 
         for (medoc : MedocData in medocs)
         {
@@ -56,10 +56,5 @@ data class DayDataModel(val dayID: Int)
     fun removeMedoc(medoc : MedocData)
     {
         medocs.remove(medoc)
-    }
-
-    fun getNextTime()
-    {
-
     }
 }

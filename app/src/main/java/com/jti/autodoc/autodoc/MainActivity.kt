@@ -46,7 +46,7 @@ class MainActivity : Activity() {
 
         for (track : Track in tracks)
         {
-            //println("\nTrack ${track.name}")
+            println("\nTrack ${track.name}")
             val startTime = DateUtils.dateToMillis(track.startDate)
             val offset = currentTime - startTime
 
@@ -74,18 +74,16 @@ class MainActivity : Activity() {
                 println("Setting alarm for ${DateUtils.millisToDate(startTime + medoc.startOffset)}")
             }
         }
-
-        //println("Alarms added: ${pendingIds.size}")
     }
 
     override fun onStop()
     {
         super.onStop()
 
-        val filename = SAVE_FILE_PROGRAM_NAME
+        val filenameTrack = SAVE_FILE_PROGRAM_NAME
         val outputStream: FileOutputStream
         try {
-            outputStream = openFileOutput(filename, Context.MODE_PRIVATE)
+            outputStream = openFileOutput(filenameTrack, Context.MODE_PRIVATE)
 
             val root = JSONObject()
             val tracksArray = JSONArray()
@@ -143,10 +141,8 @@ class MainActivity : Activity() {
             )
 
             try {
-                //println(pendingIntent.toString())
                 alarmManager.cancel(pendingIntent)
             } catch (e: Exception) {
-               //println("AlarmManager update was not canceled. $e")
             }
         }
 

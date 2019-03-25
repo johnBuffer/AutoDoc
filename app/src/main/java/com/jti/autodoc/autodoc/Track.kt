@@ -121,6 +121,7 @@ class Track
 
         if (time < 0)
         {
+            println("Future")
             currentDay = 0
             timeInDay = 0
         }
