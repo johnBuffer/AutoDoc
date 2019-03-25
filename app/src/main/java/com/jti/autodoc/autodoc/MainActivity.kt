@@ -41,6 +41,7 @@ class MainActivity : Activity() {
     {
         removeAllAlarms()
 
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val currentTime = System.currentTimeMillis()
         var requestCodeId = currentTime.toInt()
 
@@ -67,11 +68,12 @@ class MainActivity : Activity() {
                     onIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT)
 
-                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, startTime + medoc.startOffset, pendingIntent)
+                val alarmTime = startTime + medoc.startOffset
+
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent)
 
                 pendingIds.add(medoc)
-                println("Setting alarm for ${DateUtils.millisToDate(startTime + medoc.startOffset)}")
+                println("Setting alarm for ${DateUtils.millisToDate(alarmTime)}")
             }
         }
     }
@@ -80,45 +82,12 @@ class MainActivity : Activity() {
     {
         super.onStop()
 
-        val filenameTrack = SAVE_FILE_PROGRAM_NAME
-        val outputStream: FileOutputStream
-        try {
-            outputStream = openFileOutput(filenameTrack, Context.MODE_PRIVATE)
-
-            val root = JSONObject()
-            val tracksArray = JSONArray()
-            for (track : Track in tracks)
-            {
-                tracksArray.put(track.toJson())
-            }
-            root.put("tracks", tracksArray)
-
-            outputStream.write(root.toString().toByteArray())
-            outputStream.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
         updateAlarms()
         Toast.makeText(this, getString(R.string.updated_alarms_notice), Toast.LENGTH_SHORT).show()
 
-        val filenamePendings = SAVE_FILE_PENDINGS_NAME
-        val outputStreamPendings: FileOutputStream
-        try {
-            outputStreamPendings = openFileOutput(filenamePendings, Context.MODE_PRIVATE)
-            val root = JSONObject()
-            val pendingArray = JSONArray()
-            for (medoc : MedocDataTime in pendingIds)
-            {
-                pendingArray.put(medoc.toJson())
-            }
-            root.put("pendingIds", pendingArray)
+        JsonUtils.writeJsonToFile(SAVE_FILE_PROGRAM_NAME, tracksToJson(), this)
 
-            outputStreamPendings.write(root.toString().toByteArray())
-            outputStreamPendings.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        JsonUtils.writeJsonToFile(SAVE_FILE_PENDINGS_NAME, pendingsToJson(), this)
     }
 
     private fun removeAllAlarms()
@@ -210,4 +179,31 @@ class MainActivity : Activity() {
         tracks[position] = updatedTrack
         adapter.notifyDataSetChanged()
     }
+
+    private fun tracksToJson() : JSONObject
+    {
+        val root = JSONObject()
+        val tracksArray = JSONArray()
+        for (track : Track in tracks)
+        {
+            tracksArray.put(track.toJson())
+        }
+        root.put("tracks", tracksArray)
+
+        return root
+    }
+
+    private fun pendingsToJson() : JSONObject
+    {
+        val root = JSONObject()
+        val pendingArray = JSONArray()
+        for (medoc : MedocDataTime in pendingIds)
+        {
+            pendingArray.put(medoc.toJson())
+        }
+        root.put("pendingIds", pendingArray)
+
+        return root
+    }
+
 }

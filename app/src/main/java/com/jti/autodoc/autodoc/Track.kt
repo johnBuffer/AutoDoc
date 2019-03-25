@@ -116,14 +116,13 @@ class Track
         if (size == 0)
             return timings
 
-        var currentDay = (time / DateUtils.MS_PER_DAY)
-        var timeInDay = time % DateUtils.MS_PER_DAY
+        var currentDay : Long = 0
+        var timeInDay  : Long = 0
 
-        if (time < 0)
+        if (time > 0)
         {
-            println("Future")
-            currentDay = 0
-            timeInDay = 0
+            currentDay = time / DateUtils.MS_PER_DAY
+            timeInDay = time % DateUtils.MS_PER_DAY
         }
 
         val currentDayInProgram = currentDay % size
