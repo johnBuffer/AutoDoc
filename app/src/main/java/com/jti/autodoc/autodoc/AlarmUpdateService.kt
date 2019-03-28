@@ -3,7 +3,15 @@ package com.jti.autodoc.autodoc
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.widget.Toast
 import org.json.JSONObject
+import android.support.v4.app.NotificationCompat
+import android.support.v4.app.NotificationManagerCompat
+import android.content.Intent.getIntent
+import android.R.string.cancel
+import android.app.NotificationManager
+
+
 
 class AlarmUpdateService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int
@@ -19,6 +27,12 @@ class AlarmUpdateService : Service() {
         // Pendings to JSON
         AlarmUtils.updateAlarms(tracks, pendings, this)
         JsonUtils.writeJsonToFile(MainActivity.SAVE_FILE_PENDINGS_NAME, JsonUtils.pendingsArrayToJson(pendings), this)
+
+        Toast.makeText(this, getString(R.string.updated_alarms_notice), Toast.LENGTH_SHORT).show()
+
+        val notificationId = intent.getIntExtra("notificationId", 0)
+        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        manager.cancel(notificationId)
 
         return super.onStartCommand(intent, flags, startId)
     }

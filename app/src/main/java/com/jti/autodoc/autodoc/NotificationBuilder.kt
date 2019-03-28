@@ -1,6 +1,5 @@
 package com.jti.autodoc.autodoc
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -14,7 +13,7 @@ class NotificationBuilder
     companion object {
         fun getMedocNotification(context : Context, pendingIntent : PendingIntent, title : String, description : String, color : String = "#FFFFFF") : NotificationCompat.Builder
         {
-            val builder = NotificationCompat.Builder(context, "default")
+            return NotificationCompat.Builder(context, "default")
                 .setSmallIcon(R.drawable.notification_img)
                 .setContentTitle(title)
                 .setContentText(description)
@@ -26,8 +25,6 @@ class NotificationBuilder
                 .setAutoCancel(true)
                 .setColorized(true)
                 .setColor(Color.parseColor(color))
-
-            return builder
         }
 
         fun createNotificationChannel(context : Context) {
