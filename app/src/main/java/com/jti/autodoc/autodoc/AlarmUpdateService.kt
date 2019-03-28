@@ -24,8 +24,9 @@ class AlarmUpdateService : Service() {
         val jsonDataPendings = JSONObject(dataPendings)
         val pendings = JsonUtils.loadPendingIDs(jsonDataPendings.getJSONArray("pendingIds"))
 
-        // Pendings to JSON
+        // Update alarms 
         AlarmUtils.updateAlarms(tracks, pendings, this)
+        // Pendings to JSON
         JsonUtils.writeJsonToFile(MainActivity.SAVE_FILE_PENDINGS_NAME, JsonUtils.pendingsArrayToJson(pendings), this)
 
         Toast.makeText(this, getString(R.string.updated_alarms_notice), Toast.LENGTH_SHORT).show()

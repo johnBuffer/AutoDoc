@@ -88,7 +88,7 @@ class DayDataAdapter(private val track: Track, private var mContext: Context) :
         currentDay.sortMedocs()
 
         // Set day's name and add removal dialog
-        val dayID = currentDay.dayID
+        val dayID = position + 1
         viewHolder.dayNameView!!.text = mContext.getString(R.string.day_number_display, dayID)
         viewHolder.dayNameView!!.setOnLongClickListener {
             PopUpUtils.getConfirmationPopUp(mContext, mContext.getString(R.string.day_remove_confirmation, dayID),

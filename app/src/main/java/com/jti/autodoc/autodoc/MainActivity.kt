@@ -23,6 +23,7 @@ class MainActivity : Activity() {
     companion object {
         const val SAVE_FILE_PROGRAM_NAME = "data.json"
         const val SAVE_FILE_PENDINGS_NAME = "pendings.json"
+        const val SAVE_FILE_HISTORY_NAME = "history.json"
         var NOTIFICATION_ID = 0
     }
 
