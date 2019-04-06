@@ -5,7 +5,10 @@ import java.util.*
 
 class Date(val day : Int, val month : Int, val year : Int)
 {
-
+    override fun toString() : String
+    {
+        return DateUtils.getPrettyDate(year, month, day)
+    }
 }
 
 class DateUtils

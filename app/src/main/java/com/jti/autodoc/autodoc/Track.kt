@@ -6,23 +6,26 @@ import kotlin.collections.ArrayList
 
 class MedocDataTime
 {
+    var dayTime : String = ""
     var time : Long = 0
     var description: String = ""
     var track : String = ""
     var color : String = ""
     var id: Int = 0
 
-    constructor(start: Long, description: String, track: String, color: String, id: Int)
+    constructor(dayTime : String,  time: Long, description: String, track: String, color: String, id: Int)
     {
+        this.dayTime = dayTime
         this.id = id
         this.description = description
-        this.time = start
+        this.time = time
         this.track = track
         this.color = color
     }
 
     constructor(jsonData: JSONObject)
     {
+        dayTime = jsonData.getString("dayTime")
         id = jsonData.getInt("id")
         description = jsonData.getString("description")
         time = jsonData.getLong("time")
@@ -34,6 +37,7 @@ class MedocDataTime
     {
         val obj = JSONObject()
 
+        obj.put("dayTime", dayTime)
         obj.put("id", id)
         obj.put("description", description)
         obj.put("time", time)
@@ -50,7 +54,7 @@ class MedocDataTime
 
     fun getEventName() : String
     {
-        return "[$time] $description"
+        return "[$dayTime] $description"
     }
 }
 
@@ -80,7 +84,7 @@ class Track
         days.add(DayDataModel(size()+1))
     }
 
-    fun size() : Int
+    private fun size() : Int
     {
         return days.size
     }
@@ -157,7 +161,7 @@ class Track
                     {
                         //println("Found medoc at " + medoc.time + " -> OK (Offset time : ${(currentDay + i)* DateUtils.MS_PER_DAY + medocTime})")
                         val offset = (currentDay + i)* DateUtils.MS_PER_DAY + medocTime
-                        timings.add(MedocDataTime(startTime  + offset, medoc.description, name, color, 0))
+                        timings.add(MedocDataTime(medoc.time, startTime  + offset, medoc.description, name, color, 0))
                     }
                 }
             }

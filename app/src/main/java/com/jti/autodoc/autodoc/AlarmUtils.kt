@@ -65,8 +65,12 @@ class AlarmUtils
 
                     if (!history.checkHistoryPresence(medoc.time, medoc.getEventName()))
                     {
-                        println("No history for $()-> set Alarm")
+                        println("No history for ${DateUtils.millisToDate(medoc.time)}-> set Alarm")
                         alarmManager.setExact(AlarmManager.RTC_WAKEUP, medoc.time, pendingIntent)
+                    }
+                    else
+                    {
+                        println("History found for ${DateUtils.millisToDate(medoc.time)}-> no Alarm")
                     }
 
                     pendings.add(medoc)

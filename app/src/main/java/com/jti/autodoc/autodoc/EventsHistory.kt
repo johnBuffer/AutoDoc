@@ -29,7 +29,18 @@ class EventsHistory(val context : Context)
                 if (hasDay)
                 {
                     val day = month[date.day.toString()] as JSONObject
-                    return day.has(event)
+                    val hasEvent = day.has(event)
+
+                    if (hasEvent)
+                    {
+                        println(event + " found")
+                    }
+                    else
+                    {
+                        println(event + " NOT found")
+                    }
+
+                    return hasEvent
                 }
             }
         }
@@ -95,6 +106,8 @@ class EventsHistory(val context : Context)
 
         // Set event value
         day.put(event, value)
+
+        println(data.toString())
     }
 
     fun saveToFile()
