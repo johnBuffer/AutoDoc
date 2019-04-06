@@ -3,6 +3,11 @@ package com.jti.autodoc.autodoc
 import java.text.SimpleDateFormat
 import java.util.*
 
+class Date(val day : Int, val month : Int, val year : Int)
+{
+
+}
+
 class DateUtils
 {
     companion object {
@@ -39,21 +44,12 @@ class DateUtils
             return "$hour:$minute"
         }
 
-        fun getCurrentTime() : Long
+        fun millisToDate(millis : Long) : Date
         {
             val cal = Calendar.getInstance()
+            cal.timeInMillis = millis
 
-            return (cal.get(Calendar.HOUR_OF_DAY) * MS_PER_HOUR + cal.get(Calendar.MINUTE) * MS_PER_MINUTE).toLong()
-        }
-
-        fun millisToDate(millis : Long) : String
-        {
-            /*val cal = Calendar.getInstance()
-            cal.timeInMillis = millis*/
-
-            val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
-
-            return dateFormat.format(millis)
+            return Date(cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR))
         }
 
         fun getPrettyDate(year : Int, month : Int, day : Int) : String

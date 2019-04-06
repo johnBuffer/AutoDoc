@@ -8,7 +8,7 @@ data class MedocData(var description: String, var time: String)
 
     fun toJson() : JSONObject
     {
-        var medocData = JSONObject()
+        val medocData = JSONObject()
         medocData.put("description", description)
         medocData.put("time", time)
 
