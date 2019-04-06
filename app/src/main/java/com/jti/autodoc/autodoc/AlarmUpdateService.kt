@@ -23,20 +23,22 @@ class AlarmUpdateService : Service() {
         history.loadFromFile()
 
         // Mark event as done
-        val notificationId = intent.getIntExtra("notificationId", 0)
-        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        manager.cancel(notificationId)
-
-        // Retrieve medoc
-        val medoc = MedocDataTime(JSONObject(intent.getStringExtra("medoc_data")))
-        history.addEventToHistory(medoc.time, medoc.getEventName(), "OK")
+        val notificationId = intent.getIntExtra("notificationId", -1)
+        if (notificationId != -1) {
+            val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            manager.cancel(notificationId)
+            // Retrieve medoc
+            val medoc = MedocDataTime(JSONObject(intent.getStringExtra("medoc_data")))
+            // Update history
+            history.addEventToHistory(medoc.time, medoc.getEventName(), "OK")
+            // Save history
+            history.saveToFile()
+        }
 
         // Update alarms
         AlarmUtils.updateAlarms(tracks, pendings, this, history)
         // Pendings to JSON
         JsonUtils.writeJsonToFile(MainActivity.SAVE_FILE_PENDINGS_NAME, JsonUtils.pendingsArrayToJson(pendings), this)
-        // History to JSON
-        history.saveToFile()
 
         Toast.makeText(this, getString(R.string.updated_alarms_notice), Toast.LENGTH_SHORT).show()
 
