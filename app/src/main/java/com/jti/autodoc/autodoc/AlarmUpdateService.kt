@@ -5,10 +5,6 @@ import android.content.Intent
 import android.os.IBinder
 import android.widget.Toast
 import org.json.JSONObject
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
-import android.content.Intent.getIntent
-import android.R.string.cancel
 import android.app.NotificationManager
 
 
@@ -24,10 +20,15 @@ class AlarmUpdateService : Service() {
         val jsonDataPendings = JSONObject(dataPendings)
         val pendings = JsonUtils.loadPendingIDs(jsonDataPendings.getJSONArray("pendingIds"))
 
+        val history = EventsHistory(this)
+        history.loadFromFile()
+
         // Update alarms 
-        AlarmUtils.updateAlarms(tracks, pendings, this)
+        AlarmUtils.updateAlarms(tracks, pendings, this, history)
         // Pendings to JSON
         JsonUtils.writeJsonToFile(MainActivity.SAVE_FILE_PENDINGS_NAME, JsonUtils.pendingsArrayToJson(pendings), this)
+        // History to JSON
+        history.saveToFile()
 
         Toast.makeText(this, getString(R.string.updated_alarms_notice), Toast.LENGTH_SHORT).show()
 

@@ -38,7 +38,7 @@ class AlarmUtils
             pendings.clear()
         }
 
-        fun updateAlarms(tracks : ArrayList<Track>, pendings : ArrayList<MedocDataTime>, context : Context)
+        fun updateAlarms(tracks : ArrayList<Track>, pendings : ArrayList<MedocDataTime>, context : Context, history : EventsHistory)
         {
             removeAllAlarms(pendings, context)
 
@@ -48,7 +48,6 @@ class AlarmUtils
 
             for (track : Track in tracks)
             {
-                //println("\nTrack ${track.name}")
                 val startTime = DateUtils.dateToMillis(track.startDate)
                 val offset = currentTime - startTime
 
@@ -71,7 +70,11 @@ class AlarmUtils
 
                     val alarmTime = startTime + medoc.startOffset
 
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent)
+                    if (!history.checkHistoryPresence(alarmTime, medoc.description))
+                    {
+                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent)
+                        history.addEventToHistory(alarmTime, medoc.description, "pending")
+                    }
 
                     pendings.add(medoc)
                 }

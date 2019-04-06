@@ -1,22 +1,18 @@
 package com.jti.autodoc.autodoc
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
 import org.json.JSONObject
-import java.io.*
 import android.content.Intent
 import android.app.*
-import android.app.PendingIntent
-import android.app.AlarmManager
 import android.widget.Toast
-import org.json.JSONArray
 
 
 class MainActivity : Activity() {
     private var pendingIds = ArrayList<MedocDataTime>()
     private var tracks = ArrayList<Track>()
+    private val history = EventsHistory(this)
 
     lateinit var adapter : TrackViewAdapter
 
@@ -46,10 +42,12 @@ class MainActivity : Activity() {
 
         JsonUtils.writeJsonToFile(SAVE_FILE_PROGRAM_NAME, JsonUtils.tracksArrayToJson(tracks), this)
 
-        AlarmUtils.updateAlarms(tracks, pendingIds, this)
+        AlarmUtils.updateAlarms(tracks, pendingIds, this, history)
         Toast.makeText(this, getString(R.string.updated_alarms_notice), Toast.LENGTH_SHORT).show()
 
         JsonUtils.writeJsonToFile(SAVE_FILE_PENDINGS_NAME, JsonUtils.pendingsArrayToJson(pendingIds), this)
+
+        history.saveToFile()
     }
 
     // Load previous data from JSON file
@@ -62,6 +60,8 @@ class MainActivity : Activity() {
         val dataPendings = FileUtils.getStringFromFile(SAVE_FILE_PENDINGS_NAME, this)
         val jsonDataPendings = JSONObject(dataPendings)
         pendingIds = JsonUtils.loadPendingIDs(jsonDataPendings.getJSONArray("pendingIds"))
+
+        history.loadFromFile()
     }
     catch (e: Exception) {
         e.printStackTrace()

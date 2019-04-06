@@ -13,31 +13,65 @@ class EventsHistory(val context : Context)
         data = JSONObject(FileUtils.getStringFromFile(filename, context))
     }
 
-    fun checkHistoryPresence(time : Long)
+    fun checkHistoryPresence(time : Long, event : String) : Boolean
     {
         val date = DateUtils.millisToDate(time)
 
-        val year = data[date.year.toString()] as JSONObject?
-
-        if (year != null)
+        val hasYear = data.has(date.year.toString())
+        if (hasYear)
         {
-            val month = year[date.month.toString()] as JSONObject?
-            if (month != null)
+            val year = data[date.year.toString()] as JSONObject
+            val hasMonth = year.has(date.month.toString())
+            if (hasMonth)
             {
-                val day = month[date.day.toString()] as JSONObject?
-                if (day != null)
+                val month = year[date.month.toString()] as JSONObject
+                val hasDay = month.has(date.day.toString())
+                if (hasDay)
                 {
-                    println("DAY FOUND")
+                    val day = month[date.day.toString()] as JSONObject
+                    return day.has(event)
                 }
             }
-            else
-            {
-                println("MONTH NOT FOUND")
-            }
         }
-        else
+
+        return false
+    }
+
+    fun addEventToHistory(time : Long, event : String, value : String)
+    {
+        val date = DateUtils.millisToDate(time)
+
+        // Check year for later access
+        val hasYear = data.has(date.year.toString())
+        if (!hasYear) {
+            println("YEAR ${date.year} NOT FOUND -> CREATE")
+            data.put(date.year.toString(), JSONObject())
+        }
+        val year = data[date.year.toString()] as JSONObject
+
+        // Check month for later access
+        val hasMonth = year.has(date.month.toString())
+        if (!hasMonth) {
+            println("MONTH ${date.month} NOT FOUND -> CREATE")
+            year.put(date.month.toString(), JSONObject())
+        }
+        val month = year[date.month.toString()] as JSONObject
+
+        // Check day for later access
+        val hasDay = month.has(date.day.toString())
+        if (!hasDay)
         {
-            println("YEAR NOT FOUND")
+            println("DAY ${date.day} NOT FOUND -> CREATE")
+            month.put(date.day.toString(), JSONObject())
         }
+        val day = month[date.day.toString()] as JSONObject
+
+        // Set event value
+        day.put(event, value)
+    }
+
+    fun saveToFile()
+    {
+        JsonUtils.writeJsonToFile(MainActivity.SAVE_FILE_HISTORY_NAME, data, context)
     }
 }

@@ -2,6 +2,7 @@ package com.jti.autodoc.autodoc;
 
 import android.content.Context
 import java.io.BufferedReader
+import java.io.FileNotFoundException
 import kotlin.jvm.Throws;
 
 import java.io.InputStream;
@@ -25,11 +26,17 @@ public class FileUtils {
 
         @Throws(Exception::class)
         fun getStringFromFile(filePath: String, context: Context): String {
-            val fl = context.openFileInput(filePath)
-            val ret = convertStreamToString(fl)
-            //Make sure you close all streams.
-            fl.close()
-            return ret
+            try {
+                val fl = context.openFileInput(filePath)
+                val ret = convertStreamToString(fl)
+                //Make sure you close all streams.
+                fl.close()
+                return ret
+            }
+            catch (_ : FileNotFoundException) {
+            }
+
+            return ""
         }
     }
 }
