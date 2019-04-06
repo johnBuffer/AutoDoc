@@ -8,7 +8,6 @@ import org.json.JSONObject
 import android.app.NotificationManager
 
 
-
 class AlarmUpdateService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int
     {

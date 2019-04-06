@@ -29,18 +29,8 @@ class EventsHistory(val context : Context)
                 if (hasDay)
                 {
                     val day = month[date.day.toString()] as JSONObject
-                    val hasEvent = day.has(event)
 
-                    if (hasEvent)
-                    {
-                        println(event + " found")
-                    }
-                    else
-                    {
-                        println(event + " NOT found")
-                    }
-
-                    return hasEvent
+                    return day.has(event)
                 }
             }
         }
@@ -82,7 +72,6 @@ class EventsHistory(val context : Context)
         // Check year for later access
         val hasYear = data.has(date.year.toString())
         if (!hasYear) {
-            println("YEAR ${date.year} NOT FOUND -> CREATE")
             data.put(date.year.toString(), JSONObject())
         }
         val year = data[date.year.toString()] as JSONObject
@@ -90,7 +79,6 @@ class EventsHistory(val context : Context)
         // Check month for later access
         val hasMonth = year.has(date.month.toString())
         if (!hasMonth) {
-            println("MONTH ${date.month} NOT FOUND -> CREATE")
             year.put(date.month.toString(), JSONObject())
         }
         val month = year[date.month.toString()] as JSONObject
@@ -99,7 +87,6 @@ class EventsHistory(val context : Context)
         val hasDay = month.has(date.day.toString())
         if (!hasDay)
         {
-            println("DAY ${date.day} NOT FOUND -> CREATE")
             month.put(date.day.toString(), JSONObject())
         }
         val day = month[date.day.toString()] as JSONObject
