@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.BroadcastReceiver
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
+import org.json.JSONObject
 
 class AlarmReceiver : BroadcastReceiver()
 {
@@ -21,20 +22,26 @@ class AlarmReceiver : BroadcastReceiver()
 
         val notificationId = MainActivity.NOTIFICATION_ID++
         with(NotificationManagerCompat.from(context)) {
-            val description = intent.extras.getString("medoc_description")
-            val track = intent.extras.getString("medoc_track")
-            val color = intent.extras.getString("track_color")
+            // Retrieve medoc
+            val medocData = intent.getStringExtra("medoc_data")
+            val medoc = MedocDataTime(JSONObject(medocData))
 
+            // Create action's intent
             val onIntent = Intent(context.applicationContext, AlarmUpdateService::class.java)
             onIntent.putExtra("notificationId", notificationId)
+            onIntent.putExtra("medoc_data", medocData)
 
+            // Create pending intent for action
             val pendingIntentAction = PendingIntent.getService(
                 context.applicationContext,
                 System.currentTimeMillis().toInt(),
                 onIntent,
                 PendingIntent.FLAG_ONE_SHOT)
 
-            val notification = NotificationBuilder.getMedocNotification(context, pendingIntent, "It's time ! ($track)", description!!, color!!)
+            // Create notification
+            val notification = NotificationBuilder.getMedocNotification(context,
+                pendingIntent, "It's time ! (${medoc.track})", medoc.description, medoc.color)
+            // Add action
             val action = NotificationCompat.Action.Builder(R.drawable.notification_ok_img, "Done", pendingIntentAction).build()
             notification.addAction(action)
 

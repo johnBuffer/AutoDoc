@@ -37,6 +37,33 @@ class EventsHistory(val context : Context)
         return false
     }
 
+    fun getHistoryValue(time : Long, event : String) : String
+    {
+        val date = DateUtils.millisToDate(time)
+
+        val hasYear = data.has(date.year.toString())
+        if (hasYear)
+        {
+            val year = data[date.year.toString()] as JSONObject
+            val hasMonth = year.has(date.month.toString())
+            if (hasMonth)
+            {
+                val month = year[date.month.toString()] as JSONObject
+                val hasDay = month.has(date.day.toString())
+                if (hasDay)
+                {
+                    val day = month[date.day.toString()] as JSONObject
+                    if (day.has(event))
+                    {
+                        return day[event] as String
+                    }
+                }
+            }
+        }
+
+        return ""
+    }
+
     fun addEventToHistory(time : Long, event : String, value : String)
     {
         val date = DateUtils.millisToDate(time)

@@ -6,7 +6,7 @@ import kotlin.collections.ArrayList
 
 class MedocDataTime
 {
-    var startOffset : Long = 0
+    var time : Long = 0
     var description: String = ""
     var track : String = ""
     var color : String = ""
@@ -16,7 +16,7 @@ class MedocDataTime
     {
         this.id = id
         this.description = description
-        this.startOffset = start
+        this.time = start
         this.track = track
         this.color = color
     }
@@ -25,7 +25,7 @@ class MedocDataTime
     {
         id = jsonData.getInt("id")
         description = jsonData.getString("description")
-        startOffset = jsonData.getLong("startOffset")
+        time = jsonData.getLong("time")
         track = jsonData.getString("track")
         color = jsonData.getString("track_color")
     }
@@ -36,11 +36,21 @@ class MedocDataTime
 
         obj.put("id", id)
         obj.put("description", description)
-        obj.put("startOffset", startOffset)
+        obj.put("time", time)
         obj.put("track", track)
         obj.put("track_color", color)
 
         return obj
+    }
+
+    override fun toString() : String
+    {
+        return toJson().toString()
+    }
+
+    fun getEventName() : String
+    {
+        return "[$time] $description"
     }
 }
 
@@ -108,21 +118,25 @@ class Track
         startDate = DateUtils.getPrettyDate(year, month, day)
     }
 
-    fun getAllMedocs(time : Long) : ArrayList<MedocDataTime>
+    fun getAllMedocs(atTime : Long) : ArrayList<MedocDataTime>
     {
+        val startTime = DateUtils.dateToMillis(startDate)
+
         val timings = ArrayList<MedocDataTime>()
         val size = days.size
 
         if (size == 0)
             return timings
 
+        val trackRelativeTime = atTime - startTime
+
         var currentDay : Long = 0
         var timeInDay  : Long = 0
 
-        if (time > 0)
+        if (trackRelativeTime > 0)
         {
-            currentDay = time / DateUtils.MS_PER_DAY
-            timeInDay = time % DateUtils.MS_PER_DAY
+            currentDay = trackRelativeTime / DateUtils.MS_PER_DAY
+            timeInDay = trackRelativeTime % DateUtils.MS_PER_DAY
         }
 
         val currentDayInProgram = currentDay % size
@@ -143,7 +157,7 @@ class Track
                     {
                         //println("Found medoc at " + medoc.time + " -> OK (Offset time : ${(currentDay + i)* DateUtils.MS_PER_DAY + medocTime})")
                         val offset = (currentDay + i)* DateUtils.MS_PER_DAY + medocTime
-                        timings.add(MedocDataTime(offset, medoc.description, name, color, 0))
+                        timings.add(MedocDataTime(startTime  + offset, medoc.description, name, color, 0))
                     }
                 }
             }

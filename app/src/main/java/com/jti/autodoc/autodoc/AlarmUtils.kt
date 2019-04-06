@@ -4,8 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import org.json.JSONArray
-import org.json.JSONObject
 
 class AlarmUtils
 {
@@ -19,6 +17,7 @@ class AlarmUtils
                 val onIntent = Intent(context.applicationContext, AlarmReceiver::class.java)
                 onIntent.action = AlarmReceiver.NEW_MEDOC
                 onIntent.putExtra("medoc_description", medoc.description)
+                onIntent.putExtra("medoc_time", medoc.time)
                 onIntent.putExtra("medoc_track", medoc.track)
                 onIntent.putExtra("track_color", medoc.color)
 
@@ -48,18 +47,14 @@ class AlarmUtils
 
             for (track : Track in tracks)
             {
-                val startTime = DateUtils.dateToMillis(track.startDate)
-                val offset = currentTime - startTime
-
-                val medocsTiming = track.getAllMedocs(offset)
+                val medocsTiming = track.getAllMedocs(currentTime)
 
                 for (medoc: MedocDataTime in medocsTiming)
                 {
+                    // Create intent
                     val onIntent = Intent(context.applicationContext, AlarmReceiver::class.java)
                     onIntent.action = AlarmReceiver.NEW_MEDOC
-                    onIntent.putExtra("medoc_description", medoc.description)
-                    onIntent.putExtra("medoc_track", medoc.track)
-                    onIntent.putExtra("track_color", medoc.color)
+                    onIntent.putExtra("medoc_data", medoc.toString())
 
                     medoc.id = requestCodeId++
                     val pendingIntent = PendingIntent.getBroadcast(
@@ -68,12 +63,10 @@ class AlarmUtils
                         onIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT)
 
-                    val alarmTime = startTime + medoc.startOffset
-
-                    if (!history.checkHistoryPresence(alarmTime, medoc.description))
+                    if (!history.checkHistoryPresence(medoc.time, medoc.getEventName()))
                     {
-                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent)
-                        history.addEventToHistory(alarmTime, medoc.description, "pending")
+                        println("No history for $()-> set Alarm")
+                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, medoc.time, pendingIntent)
                     }
 
                     pendings.add(medoc)
