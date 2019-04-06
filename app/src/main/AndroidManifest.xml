@@ -25,7 +25,7 @@
         <receiver android:name=".AlarmReceiver"/>
         <service android:name=".AlarmUpdateService"/>
 
-        <receiver android:name="com.jti.autodoc.autodoc.AlarmReceiver">
+        <receiver android:name="com.jti.autodoc.autodoc.AlarmsBootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
